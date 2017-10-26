@@ -4,5 +4,5 @@
 // declares the main method
 int main(void) {
     // print formatted text
-	printf("Hello, World!");
+	printf("hello, world\n");
 }
