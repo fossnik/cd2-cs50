@@ -2,10 +2,9 @@
 #include <cs50.h>
 
 int main(void) {
-    // must be initialized outside the do-while loop
     int height;
 
-    // sanity-test user input
+    // sanity-check user input
     do {
         printf("Height: ");
         height = get_int();
@@ -18,7 +17,6 @@ int main(void) {
             // print either spaces or poundsigns depending on row progress
             if ( column > row+1 ) { printf(" "); } else { printf("#"); }
         }
-        // new line must be between each column
         printf("\n");
     }
 }
