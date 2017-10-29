@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <cs50.h>
+#include <string.h>
 
 int main(void) {
     // long long is from the CS50 library
@@ -54,19 +55,19 @@ int main(void) {
     }
 
     // checking if card has numbers consistant with use by the company
-    if ( card == "MASTERCARD" ) {
+    if ( strcmp(card,"MASTERCARD") == 0 ) {
         // need 16 digits
         if ( cardnumber < 1000000000000000 || cardnumber > 9999999999999999) {
             card = "INVALID";
         }
     }
-    if ( card == "AMEX" ) {
+    if ( strcmp(card,"AMEX") == 0 ) {
         // need 15 digits
         if ( cardnumber < 100000000000000 || cardnumber > 999999999999999) {
             card = "INVALID";
         }
     }
-    if ( card == "VISA" ) {
+    if ( strcmp(card,"VISA") == 0 ) {
         // need 13 or 16 digits
         // exclude greater than 16 or less than 13
         if ( cardnumber < 1000000000000 || cardnumber > 9999999999999999) {
@@ -78,6 +79,10 @@ int main(void) {
         }
     }
 
+    // The last digit of the sum must be a zero
+    if (sum % 10 != 0) { card = "INVALID"; }
+
+    // print result
     printf("%s\n", card);
 
     // they instructed me to return 0
