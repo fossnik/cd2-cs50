@@ -22,7 +22,7 @@ int main(void) {
 
     // loop through the number until it is depleted
     while(plastic > 0){
-        // the if statement makes it only process even or odd
+        // digits are parsed in an alternating style
         if (even) {
             // EVENS //
             // using modulo thusly will render the last digit
@@ -46,7 +46,7 @@ int main(void) {
         // cleave away the last digit
         plastic = plastic / 10;
 
-        // test for different kinds of cards
+        // test for different kinds of cards based on their initial digits
         if (plastic > 50 && plastic < 56) { card = "MASTERCARD"; }
         if (plastic == 34 || plastic == 37) { card = "AMEX"; }
         if (plastic == 4) { card = "VISA"; }
