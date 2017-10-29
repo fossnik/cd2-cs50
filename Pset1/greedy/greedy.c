@@ -6,7 +6,7 @@ int main(void) {
 
     // verify that user has input a positive number
     do {
-        printf("O hai! How much change is owed?: ");
+        printf("O hai! How much change is owed?:\n");
         owed = get_float();
     } while (!(owed > 0));
 
