@@ -7,22 +7,20 @@
 int main(void) {
     // long long is from the CS50 library
     long long plastic;
+    string card = "INVALID";
 
     // sanity-check user input is purely numerical
-    // do {
-    //     printf("Number:\n");
-    //     plastic = get_long_long();
-    // } while (!(plastic > 0));
-
-
-    plastic = 378282246310005;
+    do {
+        printf("Number:\n");
+        plastic = get_long_long();
+    } while (!(plastic > 0));
 
     long long cardnumber = plastic;
     long long remain;
     int sum = 0;
-    string card = "INVALID";
     bool even = true;
 
+    // loop through the number until it is depleted
     while(plastic > 0){
         // the if statement makes it only process even or odd
         if (even) {
@@ -49,7 +47,7 @@ int main(void) {
         plastic = plastic / 10;
 
         // test for different kinds of cards
-        if (plastic > 50 && plastic < 55) { card = "MASTERCARD"; }
+        if (plastic > 50 && plastic < 56) { card = "MASTERCARD"; }
         if (plastic == 34 || plastic == 37) { card = "AMEX"; }
         if (plastic == 4) { card = "VISA"; }
     }
