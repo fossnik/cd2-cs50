@@ -2,20 +2,21 @@
 #include <cs50.h>
 
 int main(void) {
-    // float owed;
+    float owed;
 
-    // // check for positive
-    // do {
-    //     printf("O hai! How much change is owed?: ");
-    //     owed = get_float();
-    // } while (!(owed > 0));
+    // verify that user has input a positive number
+    do {
+        printf("O hai! How much change is owed?: ");
+        owed = get_float();
+    } while (!(owed > 0));
 
-    // calculate coins needed for change
-    float owed = 0.41;
+    // working with integers will be easier
     int cents_remain = owed * 100;
+
+    // for keeping track of the total number of coins needed
     int coins = 0;
 
-    // number of quarters to add to sum total of coins
+    // quarters to add to coins sum
     coins += cents_remain / 25;
     // the remainder is what's left
     cents_remain = cents_remain % 25;
