@@ -19,16 +19,18 @@ int main(void) {
     int sum = 0;
     printf("%s%lld\n\n", "INITIAL:\n", plastic);
 
-    // start from second to last digit
-    plastic = plastic / 10;
+    while(plastic > 1){
+        // EVENS //
+        // using modulo thusly will render the last digit
+        sum += plastic % 10;
+        // cleave away the last digit
+        plastic = plastic / 10;
 
-    while(plastic > 10){
-        // use modulo to capture last digit in the number
-        remain = plastic % 10;
+        // ODDS //
         // multiply product by two in accordance with Luhn's algorithm
-        remain = remain * 2;
-        plastic = plastic / 100; // cleave away the last two digits
-
+        remain = (plastic % 10) * 2;
+        // cleave away the last digit again
+        plastic = plastic / 10;
         // Luhn requires double digit numbers to be accounted for specially
         if (remain > 9) {
             // use modulo to cleave apart the second digit
@@ -38,8 +40,6 @@ int main(void) {
         } else {
             sum += remain;
         }
-
-        printf("%lld\n%s%lld%s%d\n", plastic, "RMDR: ", remain, " -|- Sum: ", sum);
     }
 
     printf("%s%d\n", "Sum: ", sum);
