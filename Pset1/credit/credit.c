@@ -15,9 +15,11 @@ int main(void) {
 
 
     plastic = 378282246310005;
+
+    long long cardnumber = plastic;
     long long remain;
     int sum = 0;
-    // string card = "INVALID";
+    string card = "INVALID";
     bool even = true;
 
     while(plastic > 0){
@@ -44,9 +46,39 @@ int main(void) {
 
         // cleave away the last digit
         plastic = plastic / 10;
+
+        // test for different kinds of cards
+        if (plastic > 50 && plastic < 55) { card = "MASTERCARD"; }
+        if (plastic == 34 || plastic == 37) { card = "AMEX"; }
+        if (plastic == 4) { card = "VISA"; }
     }
 
-    printf("%s%d\n", "Sum: ", sum);
+    // checking if card has numbers consistant with use by the company
+    if ( card == "MASTERCARD" ) {
+        // need 16 digits
+        if ( cardnumber < 1000000000000000 || cardnumber > 9999999999999999) {
+            card = "INVALID";
+        }
+    }
+    if ( card == "AMEX" ) {
+        // need 15 digits
+        if ( cardnumber < 100000000000000 || cardnumber > 999999999999999) {
+            card = "INVALID";
+        }
+    }
+    if ( card == "VISA" ) {
+        // need 13 or 16 digits
+        // exclude greater than 16 or less than 13
+        if ( cardnumber < 1000000000000 || cardnumber > 9999999999999999) {
+            card = "INVALID";
+        }
+        // exclude less than 16 and greater than 13
+        if ( cardnumber < 100000000000000 && cardnumber > 999999999999) {
+            card = "INVALID";
+        }
+    }
+
+    printf("%s\n", card);
 
     // they instructed me to return 0
     return 0;
