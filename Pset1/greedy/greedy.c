@@ -32,6 +32,6 @@ int main(void) {
     // pennies to add
     coins += cents_remain;
 
-    // print result
+    // print result sufficed a newline character
     printf("%d\n", coins);
 }
