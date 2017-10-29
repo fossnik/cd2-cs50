@@ -12,25 +12,24 @@ int main(void) {
 
     // calculate coins needed for change
     float owed = 0.41;
-    int owedCents = owed * 100;
+    int cents_remain = owed * 100;
     int coins = 0;
-    int remain;
 
     // number of quarters to add to sum total of coins
-    coins += owedCents / 25;
-    // what's leftover goes to remain
-    remain = owedCents % 25;
+    coins += cents_remain / 25;
+    // the remainder is what's left
+    cents_remain = cents_remain % 25;
 
     // dimes to add
-    coins += remain / 10;
-    remain = remain % 10;
+    coins += cents_remain / 10;
+    cents_remain = cents_remain % 10;
 
     // nickels to add
-    coins += remain / 5;
-    remain = remain % 5;
+    coins += cents_remain / 5;
+    cents_remain = cents_remain % 5;
 
     // pennies to add
-    coins += remain;
+    coins += cents_remain;
 
     // print result
     printf("%d\n", coins);
