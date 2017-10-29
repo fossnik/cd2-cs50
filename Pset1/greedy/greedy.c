@@ -10,8 +10,13 @@ int main(void) {
         owed = get_float();
     } while (!(owed > 0));
 
-    // working with integers will be easier
-    int cents_remain = owed * 100;
+    // working with integers will be easier.
+    // however, we need to use a workaround.
+    // it is necessary to first multiply by 1000, then divide by 10,
+    // because for some confounded reason 4.2 * 100 renders 419.
+    int cents_remain = owed * 1000 / 10;
+
+    printf("%s%d\n", "cents_remain: ", cents_remain);
 
     // for keeping track of the total number of coins needed
     int coins = 0;
