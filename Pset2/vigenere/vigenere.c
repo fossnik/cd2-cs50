@@ -24,21 +24,26 @@ int main(int argc, string argv[]) {
     printf("plaintext:  ");
     string plaintext = get_string();
 
-    // printf("ciphertext: ");
-    // for (int i = 0, length = strlen(plaintext); i < length; i++) {
-    //     // non-alpha characters should be passed through unaltered
-    //     if (!(isalpha(plaintext[i]))) {
-    //         printf("%c", plaintext[i]);
-    //     } else {
-    //         if (isupper(plaintext[i])) {
-    //             // ASCII uppercase starts at 65 - modulo for bounding
-    //             printf("%c", ((plaintext[i] + cycle - 65) % 26) + 65);
-    //         } else {
-    //             // ASCII lowercase starts at 97
-    //             printf("%c", ((plaintext[i] + cycle - 97) % 26) + 97);
-    //         }
-    //     }
-    // }
+    printf("ciphertext: ");
+
+    for (int cycle, i = 0, k = 0, textlen = strlen(plaintext), keylen = strlen(cyphertext); i < textlen; i++) {
+        // non-alpha characters should be passed through unaltered
+        if (!(isalpha(plaintext[i]))) {
+            printf("%c", plaintext[i]);
+        } else {
+            // set rotation quotient by the vigenere cypher key
+            // < cyphertext[i%keylen] > cycles key, bounded by key length.
+            // < tolower - 97 > will establish both 'A' and 'a' as ROT epoch of 0.
+            cycle = tolower(cyphertext[k%keylen]) - 97;
+            if (isupper(plaintext[i])) {
+                printf("%c", ((plaintext[i] + cycle - 65) % 26) + 65);
+            } else {
+                printf("%c", ((plaintext[i] + cycle - 97) % 26) + 97);
+            }
+            // increment the key
+            k++;
+        }
+    }
 
     printf("\n");
     return 0;
