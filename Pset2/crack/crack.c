@@ -9,6 +9,9 @@
 #define _XOPEN_SOURCE
 #include <unistd.h>
 
+// string representing keyspace [a-zA-Z0-9./]
+static const char keyspace[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890./";
+
 int main(void) {
 // int main(int argc, string argv[]) {
     // // verify two input arguments
@@ -21,14 +24,14 @@ int main(void) {
 
     // char *salt = hash[0] + hash[1]; // i miss javascript and python so bad.
 
-    // string representing keyspace [a-zA-Z0-9./]
-    char keyspace[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890./";
     // loop through possible passwords
-    char *ptr;
-    ptr = keyspace;
 
-    for(int i = 0; keyspace[i] != '\0'; i++) {
-        printf("%c", keyspace[i]);
+    for(int a = 0; keyspace[a] != '\0'; a++) {
+        for(int b = 0; keyspace[b] != '\0'; b++) {
+            for(int c = 0; keyspace[c] != '\0'; c++) {
+                    printf("%c%c%c\n", keyspace[a],keyspace[b],keyspace[c]);
+            }
+        }
     }
 
 
