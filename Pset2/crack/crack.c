@@ -22,37 +22,36 @@ int main(int argc, char *argv[]) {
         printf("Usage: ./crack hash\n");
         return 1;
     }
-
     char *givenhash = argv[1];
+
+    // malloc a buffer for the password bruteforce
+    char *prospective_pw = malloc(passwd_size);
+    memset(prospective_pw, 0, passwd_size);
+    // TODO: fix leak - free(prospective_pw);
 
     // establish the salt from first two chars of argv1 (the given hash)
     char *salt = malloc(2);
     salt[0] = argv[1][0];
     salt[1] = argv[1][1];
 
-    char *prospective_pw = malloc(passwd_size);
-    memset(prospective_pw, 0, passwd_size);
-
+    // execute the bruteforce recurser
     return passwerdz(prospective_pw, 0, salt, givenhash);
-
-    // free(salt);
-    // free(prospective_pw);
-
-    // return 0;
 }
 
-int passwerdz(char *passwd, int index, char *salt, char *givenhash) {
+int passwerdz(char *passwd, int tumblr, char *salt, char *givenhash) {
     for (int i = 0; i < keyspace_size; i++) {
         // let tumbler A B C or D be equal to an iterated keyspace value.
-        passwd[index] = keyspace[i];
-        if (index == 3) {   // base case (a complete sequence of 4)
+        passwd[tumblr] = keyspace[i];
+        if (tumblr < 3) passwerdz(passwd, tumblr + 1, salt, givenhash);// recur!
+        else { // tumblr == 3 | base case (a complete sequence of 4 chars)
             // test the prospective password
             if (strcmp(givenhash, crypt(passwd, salt)) == 0) {
                 printf("%s\n", passwd);
                 return 0;
                 // TODO: Why doesn't the program terminate here?
             }
-        } else passwerdz(passwd, index + 1, salt, givenhash); // recursion!
+        }
     }
+    printf("Cracking Failed!\n#Inadequate Seekspace / Big Password#\n");
     return 1;
 }
