@@ -52,6 +52,6 @@ void testpasswd(char *passwd, char *salt, char *givenhash) {
     char *cryptohash = crypt(passwd, salt);
     if (strcmp(givenhash, cryptohash) == 0) {
         printf("%s\n", passwd);
-        return passwd;
+        return 0;
     }
 }
