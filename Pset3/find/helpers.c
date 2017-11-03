@@ -13,7 +13,9 @@
  */
 bool search(int value, int values[], int n)
 {
-    // TODO: implement a searching algorithm
+    if ( n < 0 ) return false;
+    for (int i = 0, int pvalue; pvalue != '/0'; pvalue = values[i])
+        if (pvalue == value) return true;
     return false;
 }
 
