@@ -14,7 +14,6 @@ static const char keyspace[] =
 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890./";
 static const int keyspace_size = sizeof(keyspace);
 
-void testpasswd(char *passwd, char *salt, char *givenhash);
 void recurseq(char *sequence, int index, char *salt, char *givenhash);
 
 int main(int argc, string argv[]) {
@@ -40,18 +39,15 @@ int main(int argc, string argv[]) {
     return 0;
 }
 
-void recurseq(char *sequence, int index, char *salt, char *givenhash) {
+void recurseq(char *passwd, int index, char *salt, char *givenhash) {
     for (int i = 0; i < keyspace_size; i++) {
-        sequence[index] = keyspace[i];
-        if (index == 3) testpasswd(sequence, salt, givenhash);
-        else recurseq(sequence, index + 1, salt, givenhash);
-    }
-}
-
-void testpasswd(char *passwd, char *salt, char *givenhash) {
-    char *cryptohash = crypt(passwd, salt);
-    if (strcmp(givenhash, cryptohash) == 0) {
-        printf("%s\n", passwd);
-        return 0;
+        passwd[index] = keyspace[i];
+        if (index == 3) {
+            // test the sequence
+            if (strcmp(givenhash, crypt(passwd, salt)) == 0) {
+                printf("%s\n", passwd);
+            }
+        }
+        else recurseq(passwd, index + 1, salt, givenhash);
     }
 }
