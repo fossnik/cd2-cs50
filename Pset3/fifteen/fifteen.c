@@ -181,14 +181,14 @@ void draw(void)
  */
 bool move(int tile)
 {
-    int tile_row, tile_col, hole_row, hole_col;
+    int tile_row, tile_col;
 
     // locate user specified tile
     for(int row = 0; row < d; row++)
         for(int col = 0; col < d; col++)
             if (board[row][col] == tile) {
                 tile_row=row;
-                hole_row=row;
+                tile_col=col;
             }
 
     // locate zero
@@ -198,7 +198,9 @@ bool move(int tile)
             if (board[row][col] == 0) {
                 board[row][col] = tile;
                 board[tile_row][tile_col] = 0;
+                return true;
             }
+    return false;
 }
 
 /**
