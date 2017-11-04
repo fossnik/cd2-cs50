@@ -197,16 +197,20 @@ bool move(int tile)
                 tile_col=col;
             }
 
-    // locate zero
-    for(int row = 0; row < d; row++)
-        for(int col = 0; col < d; col++)
-            // upon discovery of 0, swap values with tile
-            if (board[row][col] == 0) {
-                board[row][col] = tile;
-                board[tile_row][tile_col] = 0;
-                return true;
-            }
-    return false;
+    // determine if any of 4 proximal tiles are zero & swap
+    if (board[tile_row + 1][tile_col] == 0 && tile_row + 1 < d)
+        board[tile_row + 1][tile_col] = tile;
+    else if (board[tile_row - 1][tile_col] == 0 && tile_row - 1 > d)
+        board[tile_row - 1][tile_col] = tile;
+    else if (board[tile_row][tile_col + 1] == 0 && tile_col + 1 < d)
+        board[tile_row][tile_col + 1] = tile;
+    else if (board[tile_row][tile_col - 1] == 0 && tile_col - 1 > d)
+        board[tile_row][tile_col - 1] = tile;
+    else
+        return false;
+
+    board[tile_row][tile_col] = 0;
+    return true;
 }
 
 /**
