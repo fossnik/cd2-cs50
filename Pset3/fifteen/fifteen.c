@@ -156,9 +156,9 @@ void greet(void)
  */
 void init()
 {
-    // numerate int matrix. decrement from twice the board dimension less one.
-    for(int row = 0; row < d; row++)
-        for(int col = 0, cell_num = 2 * d - 1; col < d; col++, cell_num--)
+    // numerate int matrix. decrement from square the board dimension less one.
+    for(int row = 0, cell_num = d*d-1; row < d; row++)
+        for(int col = 0; col < d; col++, cell_num--)
             board[row][col] = cell_num;
 }
 
@@ -167,7 +167,12 @@ void init()
  */
 void draw(void)
 {
-    // TODO
+    for(int row = 0; row < d; row++) {
+        for(int col = 0; col < d; col++)
+            if (board[row][col] == 0) printf(".\t"); // 0 represents empty
+            else printf("%d\t", board[row][col]); // print digit and tab
+        printf("\n\n\n"); // newlines between rows
+    }
 }
 
 /**
