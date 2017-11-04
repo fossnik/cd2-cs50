@@ -181,8 +181,24 @@ void draw(void)
  */
 bool move(int tile)
 {
-    // TODO
-    return false;
+    int tile_row, tile_col, hole_row, hole_col;
+
+    // locate user specified tile
+    for(int row = 0; row < d; row++)
+        for(int col = 0; col < d; col++)
+            if (board[row][col] == tile) {
+                tile_row=row;
+                hole_row=row;
+            }
+
+    // locate zero
+    for(int row = 0; row < d; row++)
+        for(int col = 0; col < d; col++)
+            // upon discovery of 0, swap values with tile
+            if (board[row][col] == 0) {
+                board[row][col] = tile;
+                board[tile_row][tile_col] = 0;
+            }
 }
 
 /**
