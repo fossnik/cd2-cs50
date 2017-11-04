@@ -1,4 +1,19 @@
-0. TODO
-1. TODO
-2. TODO
-3. TODO
+0. 
+*Q - Besides 4 × 4 (which are Game of Fifteen’s dimensions), what other dimensions does the framework allow?
+
+*A - The defined constants DIM_MIN and DIM_MAX, which are used to instantiate the 2D board, indicate that the minimum dimension is 3, and max is 9.
+
+1.
+*Q - With what sort of data structure is the game’s board represented?
+
+*A - The data structure is an integer matrix, as indicated on line 27. 
+
+2.
+*Q - What function is called to greet the player at game’s start?
+
+*A - greet() [on line 66]
+
+3.
+*Q - What functions do you apparently need to implement?
+
+*A - init() [157], draw() [165], move() [174], and won() [184]
