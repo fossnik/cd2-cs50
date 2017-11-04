@@ -207,6 +207,5 @@ bool move(int tile)
  */
 bool won(void)
 {
-    // TODO
-    return false;
+    return true;
 }
