@@ -215,5 +215,9 @@ bool move(int tile)
  */
 bool won(void)
 {
-    return false;
+    // see if numbers are in ascending order for win
+    for(int last = 0, row = 0; row < d; row++)
+        for(int col = 0; col < d; col++)
+            if (board[row][col] < last++) return false;
+    return true;
 }
