@@ -209,6 +209,7 @@ bool move(int tile)
     else
         return false;
 
+    // set the chosen tile to zero to complete swap
     board[tile_row][tile_col] = 0;
     return true;
 }
