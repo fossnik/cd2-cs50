@@ -206,18 +206,10 @@ bool move(int tile)
             }
 
     // if the specified tile is next to the hole then swap them
-    if (abs(new_r-old_r) == 1 && abs(new_c-old_c) == 0)
-    {
-        board[new_r][old_c] = tile;
-        eprintf("Row Change");
-    }
-    else if (abs(new_r-old_r) == 0 && abs(new_c-old_c) == 1)
-    {
-        board[old_r][new_c] = tile;
-        eprintf("Column Change");
-    }
-    else
-        return false;
+    if((abs(new_r-old_r) == 1 && abs(new_c-old_c) == 0)
+    || (abs(new_r-old_r) == 0 && abs(new_c-old_c) == 1))
+        board[new_r][new_c] = tile;
+    else return false;
 
     // set the chosen tile to zero to complete swap
     board[old_r][old_c] = 0;
