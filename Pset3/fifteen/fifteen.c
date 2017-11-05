@@ -225,6 +225,6 @@ bool won(void)
     // see if numbers are in ascending order for win
     for(int last = 0, row = 0; row < d; row++)
         for(int col = 0; col < d; col++)
-            if (board[row][col] < last++) return false;
+            if (board[row][col] < last++ && board[row][col] != 0) return false;
     return true;
 }
