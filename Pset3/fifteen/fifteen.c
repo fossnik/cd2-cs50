@@ -205,9 +205,9 @@ bool move(int tile)
                 new_c=col;
             }
 
-    // if the specified tile is next to the hole then swap them
-    if((abs(new_r-old_r) == 1 && abs(new_c-old_c) == 0)
-    || (abs(new_r-old_r) == 0 && abs(new_c-old_c) == 1))
+    // if the specified tile is next to the hole then swap
+    // if column XOR row are no more than 1 away, tiles must border each other
+    if (abs(new_r-old_r) + abs(new_c-old_c) == 1)
         board[new_r][new_c] = tile;
     else return false;
 
