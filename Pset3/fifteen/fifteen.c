@@ -187,41 +187,40 @@ void draw(void)
  */
 bool move(int tile)
 {
-    int tile_row, tile_col;
+    int old_r, old_c, new_r, new_c;
 
     // locate user specified tile
     for(int row = 0; row < d; row++)
         for(int col = 0; col < d; col++)
             if (board[row][col] == tile) {
-                tile_row=row;
-                tile_col=col;
+                old_r=row;
+                old_c=col;
             }
 
-    // determine if any of 4 proximal tiles are zero & swap
-    // the second if condition contingent upon out of bounds.
-    if (board[tile_row + 1][tile_col] == 0 && tile_row < d)
-        {
-            board[tile_row + 1][tile_col] = tile;
-            eprintf("R +");
-        }
-    else if (board[tile_row - 1][tile_col] == 0 && tile_row > 0)
+    // locate hole (locate the zero)
+    for(int row = 0; row < d; row++)
+        for(int col = 0; col < d; col++)
+            if (board[row][col] == 0) {
+                new_r=row;
+                new_c=col;
+            }
+
+    // if the specified tile is next to the hole then swap them
+    if (abs(new_r-old_r) == 1 && abs(new_c-old_c) == 0)
     {
-        board[tile_row - 1][tile_col] = tile;
-            eprintf("- R");
-        }
-    else if (board[tile_row][tile_col + 1] == 0 && tile_col < d)
-    {    board[tile_row][tile_col + 1] = tile;
-            eprintf("C +");
-        }
-    else if (board[tile_row][tile_col - 1] == 0 && tile_col > 0)
-    {    board[tile_row][tile_col - 1] = tile;
-            eprintf("- C");
-        }
+        board[new_r][old_c] = tile;
+        eprintf("Row Change");
+    }
+    else if (abs(new_r-old_r) == 0 && abs(new_c-old_c) == 1)
+    {
+        board[old_r][new_c] = tile;
+        eprintf("Column Change");
+    }
     else
         return false;
 
     // set the chosen tile to zero to complete swap
-    board[tile_row][tile_col] = 0;
+    board[old_r][old_c] = 0;
     return true;
 }
 
