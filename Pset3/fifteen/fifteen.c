@@ -198,14 +198,25 @@ bool move(int tile)
             }
 
     // determine if any of 4 proximal tiles are zero & swap
-    if (board[tile_row + 1][tile_col] == 0 && tile_row + 1 < d)
-        board[tile_row + 1][tile_col] = tile;
-    else if (board[tile_row - 1][tile_col] == 0 && tile_row - 1 > d)
+    // the second if condition contingent upon out of bounds.
+    if (board[tile_row + 1][tile_col] == 0 && tile_row < d)
+        {
+            board[tile_row + 1][tile_col] = tile;
+            eprintf("R +");
+        }
+    else if (board[tile_row - 1][tile_col] == 0 && tile_row > 0)
+    {
         board[tile_row - 1][tile_col] = tile;
-    else if (board[tile_row][tile_col + 1] == 0 && tile_col + 1 < d)
-        board[tile_row][tile_col + 1] = tile;
-    else if (board[tile_row][tile_col - 1] == 0 && tile_col - 1 > d)
-        board[tile_row][tile_col - 1] = tile;
+            eprintf("- R");
+        }
+    else if (board[tile_row][tile_col + 1] == 0 && tile_col < d)
+    {    board[tile_row][tile_col + 1] = tile;
+            eprintf("C +");
+        }
+    else if (board[tile_row][tile_col - 1] == 0 && tile_col > 0)
+    {    board[tile_row][tile_col - 1] = tile;
+            eprintf("- C");
+        }
     else
         return false;
 
