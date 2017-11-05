@@ -205,7 +205,7 @@ bool move(int tile)
                 new_c=col;
             }
 
-    // column XOR row are distal by exactly 1 unit: swap the orthagonal tiles
+    // column XOR row are delta by exactly 1 unit: swap the orthagonal tiles
     if (abs(new_r-old_r) + abs(new_c-old_c) == 1)
         board[new_r][new_c] = tile;
     else return false;
