@@ -2,15 +2,15 @@
 *A - What’s stdint.h?
 
 *Q - stdint.h is a header file that provides type definitions of integers of specific fixed widths to aid in code portability.
-      Between 8, 16, 32, and 64 bits - signed and unsigned.
+     Between 8, 16, 32, and 64 bits - signed and unsigned.
 
 1.
 *Q - What’s the point of using uint8_t, uint32_t, int32_t, and uint16_t in a program?
 
 *A - uint8_t is an unsigned integer type with 8 bits. It can store numbers of the range 0 to 255.
-     uint16_t can store values of the range 0 to 2^16 less one (65,535).
-     uint32_t can store values of the range 0 to 2^32 less one (4,294,967,295).
-     int32_t is a signed integer, storing values between -2^31 to 2^31-1 (-2,147,483,648 to 2,147,483,647).
+     uint16_t can store values of the range 0 to 2^16-1 (65,535).
+     uint32_t can store values of the range 0 to 2^32-1 (4,294,967,295).
+     int32_t is a signed integer, storing values from -2^31 to 2^31-1 (-2,147,483,648 to 2,147,483,647).
 
 2.
 *Q - How many bytes is a BYTE, a DWORD, a LONG, and a WORD, respectively?
@@ -29,12 +29,12 @@
 *Q - What’s the difference between bfSize and biSize?
 
 *A - bfSize is the size of the bitmap file, in bytes. (includes padding and metadata)
-     biSize is the size of the bitmap structure (size of required frame buffer).
+     biSize is the size of the bitmap structure (ie. size of required frame buffer).
 
 5.
 *Q - What does it mean if biHeight is negative?
 
-*A - Negative biHeight indicates top-down DIB, meaning the file begins at the upper left corner of the image, rather than bottom right.
+*A - Negative biHeight signifies top-down DIB, meaning the file begins at the upper left corner of the image, rather than bottom right.
 
 6.
 *Q - What field in BITMAPINFOHEADER specifies the BMP’s color depth (i.e., bits per pixel)?
@@ -56,16 +56,17 @@
 9.
 *Q - What value does line 65 of copy.c assign to padding if bi.biWidth is 3?
 
-*A - If the width of the scanline is 3, then at three bytes per pixel, that's 9 bytes per line.
-     The answer is 3, because it will require 3 bytes of padding to reach a multiple of four.
+*A - If the width of the scanline is 3, then at three bytes per pixel, that's 9 bytes per scan line.
+     The answer is 3, because it will require 3 bytes of padding to make 12 bytes, which is a multiple of 4.
 
 10.
 *Q - What does fseek do?
 
-*A - fseek changes the location of the file pointer. When reading a file, you have a pointer that points to a certain location
+*A - fseek changes the location of the file pointer. When reading a file, you have a pointer that indicates to a certain location
      within that file, kind of like a cursor in a text document.  fseek advances or rewinds the locus of that pointer.
 
 11.
 *Q - What is SEEK_CUR?
 
 *A - SEEK_CUR is the current location of the cursor. SEEK_SET is the beginning of the file, and SEEK_END is the end of the file.
+     Each may be used with fseek as a point of reference from which to designate an offset.
