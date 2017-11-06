@@ -68,21 +68,10 @@ int main(int argc, char *argv[])
      */
 
     // print out the BITMAPINFOHEADER
-    fprintf(stdout, "\nBITMAPINFOHEADER\nbiSize: %d\nbiWidth: %d\nbiHeight: %d\nbiPlanes: %d\nbiBitCount: %d\nbiCompression: %d\nbiSizeImage: %d\nbiXPelsPerMeter: %d\nbiYPelsPerMeter: %d\nbiClrUsed: %d\nbiClrImportant: %d\n",
-                    bi.biSize,
-                    bi.biWidth,
-                    bi.biHeight,
-                    bi.biPlanes,
-                    bi.biBitCount,
-                    bi.biCompression,
-                    bi.biSizeImage,
-                    bi.biXPelsPerMeter,
-                    bi.biYPelsPerMeter,
-                    bi.biClrUsed,
-                    bi.biClrImportant);
+    fprintf(stdout, "\nBITMAPINFOHEADER\nbiSizeImage: %d\n", bi.biSizeImage);
 
     // print out BITMAPFILEHEADER
-    fprintf(stdout, "\nBITMAPFILEHEADER\nbfType: %d\nbfSize: %d\nbfReserved1: %d\nbfReserved2: %d\nbfOffBits: %d\n", bf.bfType, bf.bfSize, bf.bfReserved1, bf.bfReserved2, bf.bfOffBits);
+    fprintf(stdout, "\nBITMAPFILEHEADER\nbfSize: %d\n", bf.bfSize);
 
     /**
      * output diff function diff small large
@@ -99,6 +88,12 @@ int main(int argc, char *argv[])
      * < bfSize: 90
      * > bfSize: 486
      */
+
+    // mod metadata for the new image size
+    bi.biWidth      = bi.biWidth * factor;
+    bi.biHeight     = bi.biHeight * factor;
+    bi.biSizeImage  =
+    bf.bfSize       =
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
