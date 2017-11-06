@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
+            // processing one pixel at a time - encapsulated in the "triple" variable - an RGBTRIPLE struct
             // pixels with low red are the message - brighten them, and darken others
             if (triple.rgbtRed < 255) {
                 triple.rgbtBlue = 255;
