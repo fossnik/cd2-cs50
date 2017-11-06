@@ -55,6 +55,28 @@ int main(int argc, char *argv[])
         return 4;
     }
 
+    /**
+     * Elements that require modification for a resized bitmap
+     *
+     * biSize - The number of bytes required for bitmap =
+     * biWidth
+     * biHeight
+     *
+     */
+
+    fprintf(stdout, "biSize: %d\nbiWidth: %d\nbiHeight: %d\nbiPlanes: %d\nbiBitCount: %d\nbiCompression: %d\nbiSizeImage: %d\nbiXPelsPerMeter: %d\nbiYPelsPerMeter: %d\nbiClrUsed: %d\nbiClrImportant: %d\n",
+                    bi.biSize,
+                    bi.biWidth,
+                    bi.biHeight,
+                    bi.biPlanes,
+                    bi.biBitCount,
+                    bi.biCompression,
+                    bi.biSizeImage,
+                    bi.biXPelsPerMeter,
+                    bi.biYPelsPerMeter,
+                    bi.biClrUsed,
+                    bi.biClrImportant);
+
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
