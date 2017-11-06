@@ -100,8 +100,6 @@ int main(int argc, char *argv[])
      * > bfSize: 486
      */
 
-     bi.biWi
-
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
