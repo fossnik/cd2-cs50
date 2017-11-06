@@ -1,7 +1,7 @@
 0.
-*A - What’s stdint.h?
+*Q - What’s stdint.h?
 
-*Q - stdint.h is a header file that provides type definitions of integers of specific fixed widths to aid in code portability.
+*A - stdint.h is a header file that provides type definitions of integers of specific fixed widths to aid in code portability.
      Between 8, 16, 32, and 64 bits - signed and unsigned.
 
 1.
