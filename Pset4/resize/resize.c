@@ -10,15 +10,18 @@
 int main(int argc, char *argv[])
 {
     // ensure proper usage
-    if (argc != 3)
+    if (argc != 4)
     {
-        fprintf(stderr, "Usage: ./resize infile outfile\n");
+        fprintf(stderr, "Usage: ./resize factor infile outfile\n");
         return 1;
     }
 
+    // multiplication factor
+    int factor = atoi(argv[1]);
+
     // remember filenames
-    char *infile = argv[1];
-    char *outfile = argv[2];
+    char *infile = argv[2];
+    char *outfile = argv[3];
 
     // open input file
     FILE *inptr = fopen(infile, "r");
@@ -83,21 +86,21 @@ int main(int argc, char *argv[])
 
     /**
      * output diff function diff small large
-     * 4,5c4,5
+     *
      * < biWidth: 3
-     * < biHeight: -3
-     * ---
      * > biWidth: 12
+     *
+     * < biHeight: -3
      * > biHeight: -12
-     * 9c9
+     *
      * < biSizeImage: 36
-     * ---
      * > biSizeImage: 432
-     * 17c17
+     *
      * < bfSize: 90
-     * ---
      * > bfSize: 486
      */
+
+     bi.biWi
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
