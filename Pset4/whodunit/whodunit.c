@@ -1,7 +1,16 @@
 /**
- * Copies a BMP piece by piece, just because.
+ * Whodunit
+ *
+ * xxd -c 12 -g  3 -s 54 small.bmp
+ * xxd -c 36 -g  3 -s 54 large.bmp
+ * xxd -c %c -g %g -s %s
+ *
+ * %c - window size (eg. scanline width)
+ * %g - block size (eg. bit depth)
+ * %s - pointer insertion point (skip 54 bytes)
+ *
  */
-       
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,7 +21,7 @@ int main(int argc, char *argv[])
     // ensure proper usage
     if (argc != 3)
     {
-        fprintf(stderr, "Usage: ./copy infile outfile\n");
+        fprintf(stderr, "Usage: ./whodunit infile outfile\n");
         return 1;
     }
 
@@ -20,7 +29,7 @@ int main(int argc, char *argv[])
     char *infile = argv[1];
     char *outfile = argv[2];
 
-    // open input file 
+    // open input file
     FILE *inptr = fopen(infile, "r");
     if (inptr == NULL)
     {
@@ -46,7 +55,7 @@ int main(int argc, char *argv[])
     fread(&bi, sizeof(BITMAPINFOHEADER), 1, inptr);
 
     // ensure infile is (likely) a 24-bit uncompressed BMP 4.0
-    if (bf.bfType != 0x4d42 || bf.bfOffBits != 54 || bi.biSize != 40 || 
+    if (bf.bfType != 0x4d42 || bf.bfOffBits != 54 || bi.biSize != 40 ||
         bi.biBitCount != 24 || bi.biCompression != 0)
     {
         fclose(outptr);
@@ -75,6 +84,8 @@ int main(int argc, char *argv[])
 
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+
+            fprintf(stdout, "%02x\n", triple.rgbtBlue);
 
             // write RGB triple to outfile
             fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
