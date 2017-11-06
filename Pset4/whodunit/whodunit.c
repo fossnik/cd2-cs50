@@ -85,7 +85,12 @@ int main(int argc, char *argv[])
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-            fprintf(stdout, "%02x\n", triple.rgbtBlue);
+            // eliminate red pixels by rendering them white
+            if (triple.rgbtRed == 255) {
+                triple.rgbtBlue = 255;
+                triple.rgbtGreen = 255;
+            }
+            // fprintf(stdout, "%02x\n", triple.rgbtRed);
 
             // write RGB triple to outfile
             fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
