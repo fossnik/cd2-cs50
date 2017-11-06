@@ -64,7 +64,8 @@ int main(int argc, char *argv[])
      *
      */
 
-    fprintf(stdout, "biSize: %d\nbiWidth: %d\nbiHeight: %d\nbiPlanes: %d\nbiBitCount: %d\nbiCompression: %d\nbiSizeImage: %d\nbiXPelsPerMeter: %d\nbiYPelsPerMeter: %d\nbiClrUsed: %d\nbiClrImportant: %d\n",
+    // print out the BITMAPINFOHEADER
+    fprintf(stdout, "\nBITMAPINFOHEADER\nbiSize: %d\nbiWidth: %d\nbiHeight: %d\nbiPlanes: %d\nbiBitCount: %d\nbiCompression: %d\nbiSizeImage: %d\nbiXPelsPerMeter: %d\nbiYPelsPerMeter: %d\nbiClrUsed: %d\nbiClrImportant: %d\n",
                     bi.biSize,
                     bi.biWidth,
                     bi.biHeight,
@@ -76,6 +77,9 @@ int main(int argc, char *argv[])
                     bi.biYPelsPerMeter,
                     bi.biClrUsed,
                     bi.biClrImportant);
+
+    // print out BITMAPFILEHEADER
+    fprintf(stdout, "\nBITMAPFILEHEADER\nbfType: %d\nbfSize: %d\nbfReserved1: %d\nbfReserved2: %d\nbfOffBits: %d\n", bf.bfType, bf.bfSize, bf.bfReserved1, bf.bfReserved2, bf.bfOffBits);
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
