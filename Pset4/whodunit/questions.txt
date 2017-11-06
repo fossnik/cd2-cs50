@@ -15,15 +15,16 @@
 2.
 *Q - How many bytes is a BYTE, a DWORD, a LONG, and a WORD, respectively?
 
-*A - BYTE   - 1 byte
-     DWORD  - 4 bytes
-     LONG   - 4 bytes
-     WORD   - 2 bytes
+*A - BYTE   - 1 byte      4 Bits
+     DWORD  - 4 bytes    16 Bits
+     LONG   - 4 bytes    16 Bits
+     WORD   - 2 bytes     8 Bits
 
 3.
 *Q - What (in ASCII, decimal, or hexadecimal) must the first two bytes of any BMP file be? Leading bytes used to identify file formats (with high probability) are generally called "magic numbers."
 
-*A - 0x4d42 (hex) or BM (ASCII).
+*A - 0x4d42 (hex)
+     BM (ASCII)
 
 4.
 *Q - What’s the difference between bfSize and biSize?
