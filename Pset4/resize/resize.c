@@ -58,49 +58,26 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-    /**
-     * Elements that require modification for a resized bitmap
-     *
-     * biSize - The number of bytes required for bitmap =
-     * biWidth
-     * biHeight
-     *
-     */
-
+    fprintf(stdout, "OLD HEADER:");
     // print out the BITMAPINFOHEADER
-    // fprintf(stdout, "\nBITMAPINFOHEADER\nbiSizeImage: %d\n", bi.biSizeImage);
-
+    fprintf(stdout, "\nBITMAPINFOHEADER\nbiSizeImage: %d\n", bi.biSizeImage);
     // print out BITMAPFILEHEADER
-    // fprintf(stdout, "\nBITMAPFILEHEADER\nbfSize: %d\n", bf.bfSize);
+    fprintf(stdout, "\nBITMAPFILEHEADER\nbfSize: %d\n", bf.bfSize);
 
-    /**
-     * output diff function diff small large
-     *
-     * < biWidth: 3
-     * > biWidth: 12
-     *
-     * < biHeight: -3
-     * > biHeight: -12
-     *
-     * < biSizeImage: 36
-     * > biSizeImage: 432
-     *
-     * < bfSize: 90
-     * > bfSize: 486
-     */
-
-    // mod metadata for the new image size
+    // modify metadata for the new image size
     bi.biWidth      = bi.biWidth * factor;
-    // bi.biHeight     = bi.biHeight * factor;
+    int pad         = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
-    // sizeimage progression    [2x2,   4x4,    8x8,    16x16   ]
-    //                          [4,     16,     64,     256     ]
-    //                          [16,    48,     192,    768     ]
-    bi.biSizeImage  = bi.biWidth * bi.biHeight * sizeof(RGBTRIPLE);
-    // size progression         [2x2,   4x4,    8x8,    16x16   ]
-    //                          [4,     16,     64,     256     ]
-    //                          [70,    102,    246,    822     ]
-    bf.bfSize       = bi.biSizeImage + 54; // 54 bytes is metadata
+    bi.biHeight     = bi.biHeight * factor;
+    bi.biSizeImage  = (bi.biWidth + pad) * abs(bi.biHeight) * sizeof(RGBTRIPLE);
+    bf.bfSize       = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+
+    fprintf(stdout, "\n\n\nNEW HEADER:");
+    // print out the BITMAPINFOHEADER
+    fprintf(stdout, "\nBITMAPINFOHEADER\nbiSizeImage: %d\n", bi.biSizeImage);
+    // print out BITMAPFILEHEADER
+    fprintf(stdout, "\nBITMAPFILEHEADER\nbfSize: %d\n", bf.bfSize);
+
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
@@ -127,9 +104,6 @@ int main(int argc, char *argv[])
             // repeat pixel by the factor number of times
             for (int l = 0; l < factor; l++)
                 fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-                // add padding
-                for (int k = 0; k < padding; k++)
-                    fputc(0x00, outptr);
         }
 
         // skip over padding, if any
