@@ -92,8 +92,15 @@ int main(int argc, char *argv[])
     // mod metadata for the new image size
     bi.biWidth      = bi.biWidth * factor;
     bi.biHeight     = bi.biHeight * factor;
-    bi.biSizeImage  =
-    bf.bfSize       =
+
+    // sizeimage progression    [2x2,   4x4,    8x8,    16x16   ]
+    //                          [4,     16,     64,     256     ]
+    //                          [16,    48,     192,    768     ]
+    bi.biSizeImage  = bi.biWidth * bi.biHeight * 3;
+    // size progression         [2x2,   4x4,    8x8,    16x16   ]
+    //                          [4,     16,     64,     256     ]
+    //                          [70,    102,    246,    822     ]
+    bf.bfSize       = bi.biSizeImage + 54; // 54 bytes is metadata
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
