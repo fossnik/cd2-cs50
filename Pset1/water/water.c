@@ -3,8 +3,11 @@
 // the cs50 header file
 
 int main(void) {
-    printf("Minutes: ");
-    int minutes = get_int();
+    int minutes;
+    do {
+        printf("Minutes: ");
+        minutes = get_int();
+    } while (minutes < 0);
 
     // bottles is x12
     int bottles = minutes * 12;
