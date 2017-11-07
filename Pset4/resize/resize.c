@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
     // determine padding for resized image outfile
     int outfilepad         = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
-    // bi.biHeight     = bi.biHeight * factor;
+    bi.biHeight     = bi.biHeight * factor;
     bi.biSizeImage  = (bi.biWidth + outfilepad) * abs(bi.biHeight) * sizeof(RGBTRIPLE);
     bf.bfSize       = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
 
@@ -79,25 +79,31 @@ int main(int argc, char *argv[])
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
     {
-        // iterate over pixels in scanline (must use original bi.biWidth)
-        for (int j = 0; j < bi.biWidth / factor; j++)
-        {
-            // temporary storage
-            RGBTRIPLE triple;
+        // reiterate scanlines for vertical resize
+        for (int q = 0; q < factor; q++) {
+            // iterate over pixels in scanline (must use original bi.biWidth)
+            for (int j = 0; j < bi.biWidth / factor; j++)
+            {
+                // temporary storage
+                RGBTRIPLE triple;
 
-            // read RGB triple from infile
-            fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+                // read RGB triple from infile
+                fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-            // write RGB triple to outfile (n times)
-            for (int n = 0; n < factor; n++)
-                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-        }
+                // write RGB triple to outfile (n times)
+                for (int n = 0; n < factor; n++)
+                    fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+            }
             // write outfile's padding (if any)
             for (int k = 0; k < outfilepad; k++)
                 fputc(0x00, outptr);
 
-            // skip over infile padding, if any
-            fseek(inptr, padding, SEEK_CUR);
+            // skip back to beginning of scanline for repeat
+            if (q != factor - 1)
+                fseek(inptr, -((bi.biWidth/factor) * sizeof(RGBTRIPLE)), SEEK_CUR);
+        }
+        // skip over infile padding, if any
+        fseek(inptr, padding, SEEK_CUR);
     }
 
     // close infile
