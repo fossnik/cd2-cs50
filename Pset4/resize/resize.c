@@ -58,13 +58,6 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-    // print out the BITMAPINFOHEADER
-    fprintf(stderr, "\nBITMAPINFOHEADER\nbiSize: %d\nbiWidth: %d\nbiHeight: %d\nbiSizeImage: %d\n",
-                    bi.biSize,
-                    bi.biWidth,
-                    bi.biHeight,
-                    bi.biSizeImage);
-
      // determine padding for scanlines
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
