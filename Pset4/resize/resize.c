@@ -58,6 +58,24 @@ int main(int argc, char *argv[])
         return 4;
     }
 
+    // print out the BITMAPINFOHEADER
+    fprintf(stderr, "\nBITMAPINFOHEADER\nbiSize: %d\nbiWidth: %d\nbiHeight: %d\nbiPlanes: %d\nbiBitCount: %d\nbiCompression: %d\nbiSizeImage: %d\nbiXPelsPerMeter: %d\nbiYPelsPerMeter: %d\nbiClrUsed: %d\nbiClrImportant: %d\n",
+                    bi.biSize,
+                    bi.biWidth,
+                    bi.biHeight,
+                    bi.biPlanes,
+                    bi.biBitCount,
+                    bi.biCompression,
+                    bi.biSizeImage,
+                    bi.biXPelsPerMeter,
+                    bi.biYPelsPerMeter,
+                    bi.biClrUsed,
+                    bi.biClrImportant);
+
+    // print out BITMAPFILEHEADER
+    fprintf(stderr, "\nBITMAPFILEHEADER\nbfType: %d\nbfSize: %d\nbfReserved1: %d\nbfReserved2: %d\nbfOffBits: %d\n", bf.bfType, bf.bfSize, bf.bfReserved1, bf.bfReserved2, bf.bfOffBits);
+
+
      // determine padding for scanlines
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
@@ -65,9 +83,9 @@ int main(int argc, char *argv[])
     bi.biWidth      = bi.biWidth * factor;
 
     // determine padding for resized image outfile
-    int outfilepad         = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
+    int outfilepad  = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
     bi.biHeight     = bi.biHeight * factor;
-    bi.biSizeImage  = (bi.biWidth + outfilepad) * abs(bi.biHeight) * sizeof(RGBTRIPLE);
+    bi.biSizeImage  = (bi.biWidth * sizeof(RGBTRIPLE) + outfilepad) * abs(bi.biHeight);
     bf.bfSize       = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
 
     // write outfile's BITMAPFILEHEADER
