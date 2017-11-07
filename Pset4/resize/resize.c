@@ -68,10 +68,10 @@ int main(int argc, char *argv[])
      */
 
     // print out the BITMAPINFOHEADER
-    fprintf(stdout, "\nBITMAPINFOHEADER\nbiSizeImage: %d\n", bi.biSizeImage);
+    // fprintf(stdout, "\nBITMAPINFOHEADER\nbiSizeImage: %d\n", bi.biSizeImage);
 
     // print out BITMAPFILEHEADER
-    fprintf(stdout, "\nBITMAPFILEHEADER\nbfSize: %d\n", bf.bfSize);
+    // fprintf(stdout, "\nBITMAPFILEHEADER\nbfSize: %d\n", bf.bfSize);
 
     /**
      * output diff function diff small large
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 
     // mod metadata for the new image size
     bi.biWidth      = bi.biWidth * factor;
-    bi.biHeight     = bi.biHeight * factor;
+    // bi.biHeight     = bi.biHeight * factor;
 
     // sizeimage progression    [2x2,   4x4,    8x8,    16x16   ]
     //                          [4,     16,     64,     256     ]
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // iterate over infile's scanlines
-    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)`
+    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
     {
         // iterate over pixels in scanline
         for (int j = 0; j < bi.biWidth; j++)
@@ -124,7 +124,12 @@ int main(int argc, char *argv[])
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
             // write RGB triple to outfile
-            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+            // repeat pixel by the factor number of times
+            for (int l = 0; l < factor; l++)
+                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+                // add padding
+                for (int k = 0; k < padding; k++)
+                    fputc(0x00, outptr);
         }
 
         // skip over padding, if any
