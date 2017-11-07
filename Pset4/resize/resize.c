@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     // sizeimage progression    [2x2,   4x4,    8x8,    16x16   ]
     //                          [4,     16,     64,     256     ]
     //                          [16,    48,     192,    768     ]
-    bi.biSizeImage  = bi.biWidth * bi.biHeight * 3;
+    bi.biSizeImage  = bi.biWidth * bi.biHeight * sizeof(RGBTRIPLE);
     // size progression         [2x2,   4x4,    8x8,    16x16   ]
     //                          [4,     16,     64,     256     ]
     //                          [70,    102,    246,    822     ]
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // iterate over infile's scanlines
-    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
+    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)`
     {
         // iterate over pixels in scanline
         for (int j = 0; j < bi.biWidth; j++)
