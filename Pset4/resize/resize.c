@@ -59,22 +59,11 @@ int main(int argc, char *argv[])
     }
 
     // print out the BITMAPINFOHEADER
-    fprintf(stderr, "\nBITMAPINFOHEADER\nbiSize: %d\nbiWidth: %d\nbiHeight: %d\nbiPlanes: %d\nbiBitCount: %d\nbiCompression: %d\nbiSizeImage: %d\nbiXPelsPerMeter: %d\nbiYPelsPerMeter: %d\nbiClrUsed: %d\nbiClrImportant: %d\n",
+    fprintf(stderr, "\nBITMAPINFOHEADER\nbiSize: %d\nbiWidth: %d\nbiHeight: %d\nbiSizeImage: %d\n",
                     bi.biSize,
                     bi.biWidth,
                     bi.biHeight,
-                    bi.biPlanes,
-                    bi.biBitCount,
-                    bi.biCompression,
-                    bi.biSizeImage,
-                    bi.biXPelsPerMeter,
-                    bi.biYPelsPerMeter,
-                    bi.biClrUsed,
-                    bi.biClrImportant);
-
-    // print out BITMAPFILEHEADER
-    fprintf(stderr, "\nBITMAPFILEHEADER\nbfType: %d\nbfSize: %d\nbfReserved1: %d\nbfReserved2: %d\nbfOffBits: %d\n", bf.bfType, bf.bfSize, bf.bfReserved1, bf.bfReserved2, bf.bfOffBits);
-
+                    bi.biSizeImage);
 
      // determine padding for scanlines
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
@@ -95,7 +84,7 @@ int main(int argc, char *argv[])
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // iterate over infile's scanlines
-    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
+    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight / factor; i++)
     {
         // reiterate scanlines for vertical resize
         for (int q = 0; q < factor; q++) {
@@ -117,7 +106,7 @@ int main(int argc, char *argv[])
                 fputc(0x00, outptr);
 
             // skip back to beginning of scanline for repeat
-            if (q != factor - 1)
+            if (q < factor - 1)
                 fseek(inptr, -((bi.biWidth/factor) * sizeof(RGBTRIPLE)), SEEK_CUR);
         }
         // skip over infile padding, if any
