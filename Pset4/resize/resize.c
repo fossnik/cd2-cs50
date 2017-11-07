@@ -58,26 +58,17 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-    fprintf(stdout, "OLD HEADER:");
-    // print out the BITMAPINFOHEADER
-    fprintf(stdout, "\nBITMAPINFOHEADER\nbiSizeImage: %d\n", bi.biSizeImage);
-    // print out BITMAPFILEHEADER
-    fprintf(stdout, "\nBITMAPFILEHEADER\nbfSize: %d\n", bf.bfSize);
+     // determine padding for scanlines
+    int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // modify metadata for the new image size
     bi.biWidth      = bi.biWidth * factor;
-    int pad         = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
-    bi.biHeight     = bi.biHeight * factor;
-    bi.biSizeImage  = (bi.biWidth + pad) * abs(bi.biHeight) * sizeof(RGBTRIPLE);
+    // determine padding for resized image outfile
+    int outfilepad         = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
+    // bi.biHeight     = bi.biHeight * factor;
+    bi.biSizeImage  = (bi.biWidth + outfilepad) * abs(bi.biHeight) * sizeof(RGBTRIPLE);
     bf.bfSize       = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-
-    fprintf(stdout, "\n\n\nNEW HEADER:");
-    // print out the BITMAPINFOHEADER
-    fprintf(stdout, "\nBITMAPINFOHEADER\nbiSizeImage: %d\n", bi.biSizeImage);
-    // print out BITMAPFILEHEADER
-    fprintf(stdout, "\nBITMAPFILEHEADER\nbfSize: %d\n", bf.bfSize);
-
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
@@ -85,14 +76,11 @@ int main(int argc, char *argv[])
     // write outfile's BITMAPINFOHEADER
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
-    // determine padding for scanlines
-    int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
-
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
     {
-        // iterate over pixels in scanline
-        for (int j = 0; j < bi.biWidth; j++)
+        // iterate over pixels in scanline (must use original bi.biWidth)
+        for (int j = 0; j < bi.biWidth / factor; j++)
         {
             // temporary storage
             RGBTRIPLE triple;
@@ -100,20 +88,16 @@ int main(int argc, char *argv[])
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-            // write RGB triple to outfile
-            // repeat pixel by the factor number of times
-            for (int l = 0; l < factor; l++)
+            // write RGB triple to outfile (n times)
+            for (int n = 0; n < factor; n++)
                 fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
         }
+            // write outfile's padding (if any)
+            for (int k = 0; k < outfilepad; k++)
+                fputc(0x00, outptr);
 
-        // skip over padding, if any
-        fseek(inptr, padding, SEEK_CUR);
-
-        // then add it back (to demonstrate how)
-        for (int k = 0; k < padding; k++)
-        {
-            fputc(0x00, outptr);
-        }
+            // skip over infile padding, if any
+            fseek(inptr, padding, SEEK_CUR);
     }
 
     // close infile
