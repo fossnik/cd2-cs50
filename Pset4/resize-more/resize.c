@@ -135,8 +135,11 @@ int main(int argc, char *argv[])
 
     // establish how many bytes to fseek over during image shrinking.
     int skip_over_bytes;
-    if (resize < 1) { skip_over_bytes = (1 / resize) * sizeof(RGBTRIPLE); }
-    else { skip_over_bytes = 1 * sizeof(RGBTRIPLE); }
+    int skip_over_scanlines_bytes;
+    if (resize < 1) {
+        skip_over_bytes = (1 / resize) * sizeof(RGBTRIPLE);
+        skip_over_scanlines_bytes = skip_over_bytes * (bi.biWidth + padding);
+    }
 
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
@@ -151,20 +154,20 @@ int main(int argc, char *argv[])
             // write RGB triple to outfile
             fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
 
-            // fseek over some pixels (only if downsizing the image)
-            if (resize < 1 && j + 1 < bi.biWidth)
+            // fseek over some pixels in the input file (only if downsizing the image)
+            if (resize < 1)
                 fseek(inptr, skip_over_bytes, SEEK_CUR);
         }
         // skip over input file padding, if any
         fseek(inptr, padding, SEEK_CUR);
 
         // write outfile's padding (if any)
-        for (int k = 0, pad = outfilepad; k < pad; k++)
+        for (int k = 0; k < outfilepad; k++)
             fputc(0x00, outptr);
 
-        // skip ahead in the input relative to resize factor
-        if (skip_over_bytes > 1)
-            fseek(inptr, skip_over_bytes * (bi.biWidth + padding), SEEK_CUR);
+        // skip over scanlines in the input file according to skip_over_scanlines_bytes
+        if (resize < 1)
+            fseek(inptr, skip_over_scanlines_bytes, SEEK_CUR);
     }
 
     // close infile & outfile
