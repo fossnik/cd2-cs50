@@ -23,9 +23,14 @@ int main(int argc, char *argv[])
     // char *infile = argv[2], *outfile = argv[3];
 
 
-    /** alternative usage regime
+    /** Alternative Usage Regime for Testing
      *
-     *  testing puroses - make assumptions for ease of use.
+     *  2 args - Test Resize
+     *      let infile = large.bmp
+     *      let outfile = _test.bmp
+     *
+     *  1 arg - Just Print Header Data
+     *      let outfile = /dev/null
      */
     char *infile, *outfile;
     float resize = atof(argv[1]);
@@ -36,19 +41,20 @@ int main(int argc, char *argv[])
             infile = argv[2];
             outfile = argv[3];
             break;
-        case 2: // assume I: large.bmp and O: 00test.bmp
-            fprintf(stdout, "infile = large.bmp ~ outfile = /dev/null\n");
-            infile = "large.bmp";
-            outfile = "00test.bmp";
-            break;
-        case 3: // assume O: /dev/null
-            fprintf(stdout, "outfile = /dev/null\n");
+        case 3:
+            infile = argv[2];
             outfile = "/dev/null";
+            break;
+        case 2:
+            infile = "large.bmp";
+            outfile = "_test.bmp";
             break;
         default:
             fprintf(stderr, "Usage: ./resize resize_factor <infile> <outfile>\n");
             return 1;
     }
+
+    fprintf(stdout, "infile = %s   \toutfile = %s\n", infile, outfile);
 
     // open input file
     FILE *inptr = fopen(infile, "r");
