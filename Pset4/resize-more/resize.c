@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 #include "bmp.h"
 
@@ -58,8 +57,8 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-    // modify metadata for the new image size
-    newbi.biWidth = bi.biWidth * resize;
+    // modify metadata for the new image size - cast to int
+    newbi.biWidth = (int)(bi.biWidth * resize);
 
     // determine padding for resized image outfile
     int outfilepad      = (4 - (newbi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
