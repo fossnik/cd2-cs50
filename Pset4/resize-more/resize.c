@@ -25,6 +25,9 @@ int main(int argc, char *argv[])
 
     /** Alternative Usage Regime for Testing
      *
+     *  3 args - Normal Mode
+     *      ./resize resize_factor infile outfile
+     *
      *  2 args - Test Resize
      *      let infile = large.bmp
      *      let outfile = _test.bmp
@@ -36,7 +39,7 @@ int main(int argc, char *argv[])
     float resize = atof(argv[1]);
 
     switch ( argc ) {
-        case 4: // manually define all arguments & break
+        case 4:
             infile = argv[2];
             outfile = argv[3];
             break;
