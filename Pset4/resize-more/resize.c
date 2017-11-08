@@ -33,15 +33,15 @@ int main(int argc, char *argv[])
     switch ( argc )
     {
         case 4: // manually define all arguments & break
-            *infile = argv[2];
-            *outfile = argv[3];
+            infile = argv[2];
+            outfile = argv[3];
             break;
         case 2: // assume I: large.bmp and O: 00test.bmp
-            *infile = "large.bmp";
-            *outfile = "00test.bmp";
+            infile = "large.bmp";
+            outfile = "00test.bmp";
             break;
         case 3: // assume O: /dev/null
-            *outfile = /dev/null
+            outfile = "/dev/null";
             break;
         default:
             fprintf(stderr, "Usage: ./resize resize_factor <infile> <outfile>\n");
