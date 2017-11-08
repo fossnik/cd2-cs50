@@ -37,10 +37,12 @@ int main(int argc, char *argv[])
             outfile = argv[3];
             break;
         case 2: // assume I: large.bmp and O: 00test.bmp
+            fprintf(stdout, "infile = large.bmp ~ outfile = /dev/null\n");
             infile = "large.bmp";
             outfile = "00test.bmp";
             break;
         case 3: // assume O: /dev/null
+            fprintf(stdout, "outfile = /dev/null\n");
             outfile = "/dev/null";
             break;
         default:
