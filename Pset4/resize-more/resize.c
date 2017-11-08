@@ -35,8 +35,7 @@ int main(int argc, char *argv[])
     char *infile, *outfile;
     float resize = atof(argv[1]);
 
-    switch ( argc )
-    {
+    switch ( argc ) {
         case 4: // manually define all arguments & break
             infile = argv[2];
             outfile = argv[3];
@@ -58,26 +57,24 @@ int main(int argc, char *argv[])
 
     // open input file
     FILE *inptr = fopen(infile, "r");
-    if (inptr == NULL)
-    {
+    if (inptr == NULL) {
         fprintf(stderr, "Could not open %s.\n", infile);
         return 2;
     }
 
     // open output file
     FILE *outptr = fopen(outfile, "w");
-    if (outptr == NULL)
-    {
+    if (outptr == NULL) {
         fclose(inptr);
         fprintf(stderr, "Could not create %s.\n", outfile);
         return 3;
     }
 
-    // read infile's BITMAPFILEHEADER
+    // read infile's BITMAPFILEHEADER & make a copy (newbf)
     BITMAPFILEHEADER bf, newbf;
     fread(&bf, sizeof(BITMAPFILEHEADER), 1, inptr);
 
-    // read infile's BITMAPINFOHEADER
+    // read infile's BITMAPINFOHEADER & make a copy (newbi)
     BITMAPINFOHEADER bi, newbi;
     fread(&bi, sizeof(BITMAPINFOHEADER), 1, inptr);
 
@@ -109,7 +106,7 @@ int main(int argc, char *argv[])
      * bfSize    =  90          bfSize    =  486
      */
 
-    // test header mods
+    // Display Pertinent Header Data
     fprintf(stderr,
         "-: old header :-  \t  -: new header:-\n"
         "Width     =  %d   \t  Width     =  %d\n"
@@ -128,7 +125,7 @@ int main(int argc, char *argv[])
     // write outfile's BITMAPINFOHEADER
     fwrite(&newbi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
-    // determine padding for scanlines
+    // determine padding for scanlines (of infile)
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // establish how many bytes to fseek over during image shrinking.
@@ -165,10 +162,8 @@ int main(int argc, char *argv[])
             fseek(inptr, skip_over_bytes * (bi.biWidth + padding), SEEK_CUR);
     }
 
-    // close infile
+    // close infile & outfile
     fclose(inptr);
-
-    // close outfile
     fclose(outptr);
 
     // success
