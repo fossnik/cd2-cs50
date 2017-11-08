@@ -88,40 +88,53 @@ int main(int argc, char *argv[])
         bf.bfSize, newbf.bfSize
     );
 
-    // // write outfile's BITMAPFILEHEADER
-    // fwrite(&newbf, sizeof(BITMAPFILEHEADER), 1, outptr);
+    // write outfile's BITMAPFILEHEADER
+    fwrite(&newbf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
-    // // write outfile's BITMAPINFOHEADER
-    // fwrite(&newbi, sizeof(BITMAPINFOHEADER), 1, outptr);
+    // write outfile's BITMAPINFOHEADER
+    fwrite(&newbi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
-    // // determine padding for scanlines
-    // int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
+    // determine padding for scanlines
+    int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
-    // // iterate over infile's scanlines
-    // for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
-    // {
-    //     // iterate over pixels in scanline
-    //     for (int j = 0; j < bi.biWidth; j++)
-    //     {
-    //         // temporary storage
-    //         RGBTRIPLE triple;
+    // set skip interval
+    int skipi;
+    if (resize < 0)
+        skipi = 1 / resize;
+    else
+        skipi = 1;
 
-    //         // read RGB triple from infile
-    //         fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+    // iterate over infile's scanlines
+    for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
+    {
+        // iterate over pixels in scanline
+        for (int j = 0; j < bi.biWidth; j++)
+        {
+            // temporary storage
+            RGBTRIPLE triple;
 
-    //         // write RGB triple to outfile
-    //         fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-    //     }
+            // read RGB triple from infile
+            fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-    //     // skip over padding, if any
-    //     fseek(inptr, padding, SEEK_CUR);
+            // write RGB triple to outfile
+            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
 
-    //     // then add it back (to demonstrate how)
-    //     for (int k = 0; k < padding; k++)
-    //     {
-    //         fputc(0x00, outptr);
-    //     }
-    // }
+            // skip ahead in the input relative to resize factor
+            if (skipi > 1 && j + 1 < bi.biWidth)
+                fseek(inptr, skipi, SEEK_CUR);
+        }
+
+        // skip over input file padding, if any
+        fseek(inptr, padding, SEEK_CUR);
+
+        // write outfile's padding (if any)
+        for (int k = 0; k < outfilepad; k++)
+            fputc(0x00, outptr);
+
+        // skip ahead in the input relative to resize factor
+        if (skipi > 1)
+            fseek(inptr, skipi * (bi.biWidth + padding), SEEK_CUR);
+    }
 
     // close infile
     fclose(inptr);
