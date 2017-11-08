@@ -41,10 +41,12 @@ int main(int argc, char *argv[])
             outfile = argv[3];
             break;
         case 3:
+            printf("Header Print Mode:\n");
             infile = argv[2];
             outfile = "/dev/null";
             break;
         case 2:
+            printf("Resize Algorithm Test Mode:\n");
             infile = "large.bmp";
             outfile = "_test.bmp";
             break;
