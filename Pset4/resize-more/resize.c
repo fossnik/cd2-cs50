@@ -9,18 +9,44 @@
 
 int main(int argc, char *argv[])
 {
-    // ensure proper usage
-    if (argc != 4)
-    {
-        fprintf(stderr, "Usage: ./copy infile outfile\n");
-        return 1;
-    }
+    // // ensure proper usage
+    // if (argc != 4)
+    // {
+    //     fprintf(stderr, "Usage: ./resize resize_factor infile outfile\n");
+    //     return 1;
+    // }
 
-    // remember float resize value
+    // // remember float resize value
+    // float resize = atof(argv[1]);
+
+    // // remember filenames
+    // char *infile = argv[2], *outfile = argv[3];
+
+
+    /** alternative usage regime
+     *
+     *  testing puroses - make assumptions for ease of use.
+     */
+    char *infile, *outfile;
     float resize = atof(argv[1]);
 
-    // remember filenames
-    char *infile = argv[2], *outfile = argv[3];
+    switch ( argc )
+    {
+        case 4: // manually define all arguments & break
+            *infile = argv[2];
+            *outfile = argv[3];
+            break;
+        case 2: // assume I: large.bmp and O: 00test.bmp
+            *infile = "large.bmp";
+            *outfile = "00test.bmp";
+            break;
+        case 3: // assume O: /dev/null
+            *outfile = /dev/null
+            break;
+        default:
+            fprintf(stderr, "Usage: ./resize resize_factor <infile> <outfile>\n");
+            return 1;
+    }
 
     // open input file
     FILE *inptr = fopen(infile, "r");
@@ -97,43 +123,38 @@ int main(int argc, char *argv[])
     // determine padding for scanlines
     int padding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
-    // set skip interval
-    int skipi;
-    if (resize < 0)
-        skipi = 1 / resize;
-    else
-        skipi = 1;
+    // establish how many bytes to fseek over during image shrinking.
+    int skip_over_bytes;
+    if (resize < 1) { skip_over_bytes = (1 / resize) * sizeof(RGBTRIPLE); }
+    else { skip_over_bytes = 1 * sizeof(RGBTRIPLE); }
 
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
     {
-        // iterate over pixels in scanline
-        for (int j = 0; j < bi.biWidth; j++)
+        // iterate over pixels in each scanline
+        for (int j = 0; j < bi.biWidth; j++) // temporary storage
         {
-            // temporary storage
+            // temporary storage (&tripal points to structs which represent RGB pixels)
             RGBTRIPLE triple;
-
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
-
             // write RGB triple to outfile
             fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
 
-            // skip ahead in the input relative to resize factor
-            if (skipi > 1 && j + 1 < bi.biWidth)
-                fseek(inptr, skipi, SEEK_CUR);
+            // fseek over some pixels (only if downsizing the image)
+            if (resize < 1 && j + 1 < bi.biWidth)
+                fseek(inptr, skip_over_bytes, SEEK_CUR);
         }
-
         // skip over input file padding, if any
         fseek(inptr, padding, SEEK_CUR);
 
         // write outfile's padding (if any)
-        for (int k = 0; k < outfilepad; k++)
+        for (int k = 0, pad = outfilepad; k < pad; k++)
             fputc(0x00, outptr);
 
         // skip ahead in the input relative to resize factor
-        if (skipi > 1)
-            fseek(inptr, skipi * (bi.biWidth + padding), SEEK_CUR);
+        if (skip_over_bytes > 1)
+            fseek(inptr, skip_over_bytes * (bi.biWidth + padding), SEEK_CUR);
     }
 
     // close infile
