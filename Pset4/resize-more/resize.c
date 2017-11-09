@@ -169,31 +169,41 @@ int main(int argc, char *argv[])
          * c XXXXXXXXXXXX
          */
 
-        // iterate over 3 scanlines (or however many lines the shrunk image will have)
+        // iterate vertically over 3 scanlines (or however many lines the shrunk image will have)
         for (int scanline = abs(newbi.biHeight); scanline > 0; scanline--)
         {
             // temporary storage (&triple points to structs which represent RGB pixels)
             RGBTRIPLE triple;
-            int red = 0, green = 0, blue = 0;
 
-            // iterate over 3 pixels comprising the scanline for the outfile
-            for (int outline = newbi.biWidth; outline > 0; outline--)
+            // horizontally iterating, build the 3 pixel wide scanline for the outfile
+            for (int segment = newbi.biWidth; segment > 0; segment--)
             {
-                // iterate over 4 of 12 pixels from the infile
+                int index = 0;
+                int *red = malloc(bi.biWidth + 1), *green = malloc(bi.biWidth), *blue = malloc(bi.biWidth);
+                // each of the 3 pixels in the outfile scanline is derived after
+                // iterating over a 4 pixel segment of the present infile scanline
                 for (int pixel = newbi.biWidth + 1; pixel > 0; pixel--)
                 {
                     // read RGB triple from infile
                     fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-                    red   += triple.rgbtRed;
-                    green += triple.rgbtGreen;
-                    blue  += triple.rgbtBlue;
+                    red   [index] = triple.rgbtRed;
+                    green [index] = triple.rgbtGreen;
+                    blue  [index] = triple.rgbtBlue;
+                    index++;
                 }
 
+                // how do i average these ??
+
+
+                free(red);
+                free(green);
+                free(blue);
+
                 // average 4 verticle pixels
-                triple.rgbtRed   = red / newbi.biWidth;
-                triple.rgbtGreen = green / newbi.biWidth;
-                triple.rgbtBlue  = blue / newbi.biWidth;
+                // triple.rgbtRed   = red / newbi.biWidth;
+                // triple.rgbtGreen = green / newbi.biWidth;
+                // triple.rgbtBlue  = blue / newbi.biWidth;
 
                 // write RGB triple to outfile
                 fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static const int block_size = 512;
+
 int main(int argc, char *argv[])
 {
     // ensure proper usage
@@ -23,11 +25,17 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    // seek through input file 512 bytes at a time until end
-    for (long byte = 0; fgetc(inptr) != 0xffffffff; byte += 512) {
-        _Bool jpeg = 0; // assume not a jpeg (_Bool is a c99 keyword)
+    fseek(inptr, 0, SEEK_END);      // point to file end
+    long raw_size = ftell(inptr);   // mark pointer position (ie filesize)
+    fseek(inptr, 0, SEEK_SET);      // return point back to start
 
-        // seek n*512 clusters from file beginning
+    int file_count = 0; // counter to keep track of filenames
+
+    // seek through input file one block at a time
+    for (long byte = 0; ftell(inptr) < raw_size; byte += block_size) {
+        _Bool signature_detected = 0; // (_Bool is a c99 keyword)
+
+        // seek to the start of next block (set pointer location)
         fseek(inptr, byte, SEEK_SET);
 
         // test magic number for jpeg (ff d8 ff & e0-ef)
@@ -36,12 +44,41 @@ int main(int argc, char *argv[])
                 if (fgetc(inptr) == 0xff) {
                     int fourth = fgetc(inptr);
                     if (fourth >= 0xe0 && fourth <= 0xef)
-                        jpeg = 1;
+                        signature_detected = 1; // "magic" numbers detected!
                 }
-        // found jpeg magic number
-        if (jpeg) {
-            printf("JPEG exists at byte %ld \n", byte);
+
+        if (signature_detected) {
+            // write into buffer a filename for the found jpeg
+            char fn_buffer[3];
+            sprintf(fn_buffer,"%d.jpeg", file_count);
+
+            // open output file
+            FILE *outptr = fopen(fn_buffer, "w");
+            if (outptr == NULL) {
+                fclose(inptr);
+                fprintf(stderr, "Could not create %s.\n", fn_buffer);
+                return 3;
+            }
+
+            // write output file not at end
+            while (fgetc(inptr) != 0xffffffff) {
+                // write write write
+                fwrite(&inptr, block_size, 1, outptr);
+
+                byte += block_size;
+
+                // prophylacticly test against signature of next file
+                if (fgetc(inptr) == 0xff) if (fgetc(inptr) == 0xd8) if (fgetc(inptr) == 0xff)
+                {
+                    int fourth = fgetc(inptr);
+                    if (fourth >= 0xe0 && fourth <= 0xef)
+                        break; // end upon encounter of magic numbers
+                }
+            }
+            fclose(outptr); // close outfile - end of jpeg
+            file_count++;
         }
+
     }
 
     // close infile
