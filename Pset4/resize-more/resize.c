@@ -154,10 +154,10 @@ int main(int argc, char *argv[])
         skip_over_scanlines = skip_over_pixels * (bi.biWidth + padding);
 
         // iterate over infile's scanlines
-        for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
+        for (int i = 0, scanlines = (int)(abs(bi.biHeight) * resize); i < scanlines; i++)
         {
             // iterate over pixels in each scanline
-            for (int j = 0; j < bi.biWidth; j++) // temporary storage
+            for (int j = 0, pixels = (int)(bi.biWidth * resize); j < pixels; j++) // temporary storage
             {
                 // temporary storage (&tripal points to structs which represent RGB pixels)
                 RGBTRIPLE triple;
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
                 // write RGB triple to outfile
                 fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
 
-                // fseek over some pixels in the input file (only if downsizing the image)
+                // fseek over some pixels in the input file
                 fseek(inptr, skip_over_pixels, SEEK_CUR);
             }
             // skip over input file padding, if any
