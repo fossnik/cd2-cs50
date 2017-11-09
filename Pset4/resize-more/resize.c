@@ -24,17 +24,22 @@ int main(int argc, char *argv[])
 
 
     /** Alternative Usage Regime for Testing
-     *
-     *  3 args - Normal Mode
-     *      ./resize resize_factor infile outfile
-     *
-     *  2 args - Test Resize
-     *      let infile = large.bmp
-     *      let outfile = _test.bmp
-     *
-     *  1 arg - Just Print Header Data
-     *      let outfile = /dev/null
      */
+    if (!(argc < 5 && argc > 1)) {
+        fprintf(stderr, "\n"
+        "!!~ Alternative Usage Regime for Testing ~!!\n\n"
+        "Usage: ./resize resize_factor <infile> <outfile>\n\n"
+            "3 args - Normal Mode\n\t"
+                "./resize resize_factor infile outfile\n\n"
+            "2 args - Test Resize\n\t"
+                "let infile = large.bmp || small.bmp\n\t"
+                "let outfile = _test.bmp\n\n"
+            "1 arg - Just Print Header Data\n\t"
+                "let outfile = /dev/null\n\n"
+        );
+        return 1;
+    }
+
     char *infile, *outfile;
     float resize = atof(argv[1]);
 
@@ -44,21 +49,21 @@ int main(int argc, char *argv[])
             outfile = argv[3];
             break;
         case 3:
-            printf("~: Header Print Mode :~\n");
+            printf("\t~: Header Print Mode :~\n");
             infile = argv[2];
             outfile = "/dev/null";
             break;
         case 2:
-            printf("~: Algorithm Test Mode :~\n");
-            infile = "large.bmp";
+            printf("\t~: Algorithm Test Mode :~\n");
+            if (resize < 1) infile = "large.bmp";
+            else infile = "small.bmp";
             outfile = "_test.bmp";
             break;
         default:
-            fprintf(stderr, "Usage: ./resize resize_factor <infile> <outfile>\n");
             return 1;
     }
 
-    fprintf(stdout, "infile = %s   \toutfile = %s\n", infile, outfile);
+    fprintf(stdout, "infile = %s   \t  outfile = %s\n", infile, outfile);
 
     // open input file
     FILE *inptr = fopen(infile, "r");
@@ -147,32 +152,40 @@ int main(int argc, char *argv[])
     // iterate over infile's scanlines
     for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
     {
-        // iterate over pixels in each scanline
-        for (int j = 0; j < bi.biWidth; j++) // temporary storage
-        {
-            // temporary storage (&tripal points to structs which represent RGB pixels)
-            RGBTRIPLE triple;
+        // reiterate scanlines for vertical resize (if resize > 1)
+        for (int q = 0; q < resize; q++) {
+            // iterate over pixels in each scanline
+            for (int j = 0; j < bi.biWidth; j++) // temporary storage
+            {
+                // temporary storage (&tripal points to structs which represent RGB pixels)
+                RGBTRIPLE triple;
 
-            // read RGB triple from infile
-            fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+                // read RGB triple from infile
+                fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-            // write RGB triple to outfile
-            fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+                // write RGB triple to outfile
+                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
 
-            // fseek over some pixels in the input file (only if downsizing the image)
+                // fseek over some pixels in the input file (only if downsizing the image)
+                if (resize < 1)
+                    fseek(inptr, skip_over_bytes, SEEK_CUR);
+            }
+            // skip over input file padding, if any
+            fseek(inptr, padding, SEEK_CUR);
+
+            // write outfile's padding (if any)
+            for (int k = 0; k < outfilepad; k++)
+                fputc(0x00, outptr);
+
+            // if resize will shrink,
+            //      skip over scanlines in the input file according to skip_over_scanlines_bytes
+            // else,
+            //      skip back to beginning of scanline for repeat
             if (resize < 1)
-                fseek(inptr, skip_over_bytes, SEEK_CUR);
+                fseek(inptr, skip_over_scanlines_bytes, SEEK_CUR);
+            else if (q < resize - 1)
+                fseek(inptr, -((bi.biWidth/resize) * sizeof(RGBTRIPLE)), SEEK_CUR);
         }
-        // skip over input file padding, if any
-        fseek(inptr, padding, SEEK_CUR);
-
-        // write outfile's padding (if any)
-        for (int k = 0; k < outfilepad; k++)
-            fputc(0x00, outptr);
-
-        // skip over scanlines in the input file according to skip_over_scanlines_bytes
-        if (resize < 1)
-            fseek(inptr, skip_over_scanlines_bytes, SEEK_CUR);
     }
 
     // close infile & outfile
