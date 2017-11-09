@@ -65,6 +65,9 @@ int main(int argc, char *argv[])
 
     fprintf(stdout, "infile = %s   \t  outfile = %s\n", infile, outfile);
 
+    /** End of Alternative Usage Regime
+     */
+
     // open input file
     FILE *inptr = fopen(infile, "r");
     if (inptr == NULL) {
@@ -106,6 +109,7 @@ int main(int argc, char *argv[])
 
     // determine padding for resized image outfile
     int outfilepad      = (4 - (newbi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
+
     newbi.biHeight      = bi.biHeight * resize;
     newbi.biSizeImage   = (newbi.biWidth * sizeof(RGBTRIPLE) + outfilepad) * abs(newbi.biHeight);
     newbf.bfSize        = newbi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
