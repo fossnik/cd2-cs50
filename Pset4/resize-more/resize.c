@@ -75,13 +75,16 @@ int main(int argc, char *argv[])
         return 3;
     }
 
-    // read infile's BITMAPFILEHEADER & make a copy (newbf)
+    // read infile's BITMAPFILEHEADER
     BITMAPFILEHEADER bf, newbf;
     fread(&bf, sizeof(BITMAPFILEHEADER), 1, inptr);
 
-    // read infile's BITMAPINFOHEADER & make a copy (newbi)
+    // read infile's BITMAPINFOHEADER
     BITMAPINFOHEADER bi, newbi;
     fread(&bi, sizeof(BITMAPINFOHEADER), 1, inptr);
+
+    // make a copies of the File and Info headers
+    newbf = bf, newbi = bi;
 
     // ensure infile is (likely) a 24-bit uncompressed BMP 4.0
     if (bf.bfType != 0x4d42 || bf.bfOffBits != 54 || bi.biSize != 40 ||
@@ -149,8 +152,10 @@ int main(int argc, char *argv[])
         {
             // temporary storage (&tripal points to structs which represent RGB pixels)
             RGBTRIPLE triple;
+
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+
             // write RGB triple to outfile
             fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
 
