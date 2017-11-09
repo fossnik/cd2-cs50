@@ -26,16 +26,16 @@ int main(int argc, char *argv[])
     }
 
     fseek(inptr, 0, SEEK_END);      // point to file end
-    long raw_size = ftell(inptr);   // mark pointer position (ie filesize)
-    fseek(inptr, 0, SEEK_SET);      // return point back to start
+    long raw_size = ftell(inptr);   // record position of end (ie filesize)
 
     int file_count = 0; // counter to keep track of filenames
 
-    // seek through input file one block at a time
-    for (long byte = 0; ftell(inptr) < raw_size; byte += block_size) {
+    // iterate through input file one block at a time
+    for (long byte = 0; byte < raw_size; byte += block_size)
+    {
         _Bool signature_detected = 0; // (_Bool is a c99 keyword)
 
-        // seek to the start of next block (set pointer location)
+        // set pointer location by distance from file start
         fseek(inptr, byte, SEEK_SET);
 
         // test magic number for jpeg (ff d8 ff & e0-ef)
@@ -47,23 +47,23 @@ int main(int argc, char *argv[])
                         signature_detected = 1; // "magic" numbers detected!
                 }
 
-        if (signature_detected) {
+        if (signature_detected)
+        {
+            char fn_buffer[3];  // buffer for filenames
             // write into buffer a filename for the found jpeg
-            char fn_buffer[3];
-            sprintf(fn_buffer,"%d.jpeg", file_count);
+            sprintf(fn_buffer,"%003d.jpg", file_count);
+            fprintf(stderr, "File: %s, Position: %ld\n", fn_buffer, ftell(inptr));
 
             // open output file
+            // FILE *outptr = fopen("/dev/null", "w");
             FILE *outptr = fopen(fn_buffer, "w");
-            if (outptr == NULL) {
-                fclose(inptr);
-                fprintf(stderr, "Could not create %s.\n", fn_buffer);
-                return 3;
-            }
 
-            // write output file not at end
-            while (fgetc(inptr) != 0xffffffff) {
-                // write write write
-                fwrite(&inptr, block_size, 1, outptr);
+            // write output file while
+            while (fgetc(inptr) != 0xffffffff)
+            {
+                fseek(inptr, byte, SEEK_SET); // reset to start of block
+
+                fwrite(&inptr, block_size, 1, outptr); // write one block to outfile
 
                 byte += block_size;
 
@@ -72,13 +72,15 @@ int main(int argc, char *argv[])
                 {
                     int fourth = fgetc(inptr);
                     if (fourth >= 0xe0 && fourth <= 0xef)
+                    {
+                        fprintf(stderr, "New Signature Break Position: %ld\n", ftell(inptr));
                         break; // end upon encounter of magic numbers
+                    }
                 }
             }
-            fclose(outptr); // close outfile - end of jpeg
             file_count++;
+            fclose(outptr); // close outfile - end of jpeg
         }
-
     }
 
     // close infile
