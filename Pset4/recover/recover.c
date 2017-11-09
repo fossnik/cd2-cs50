@@ -49,23 +49,23 @@ int main(int argc, char *argv[])
 
         if (signature_detected)
         {
+            fseek(inptr, byte, SEEK_SET); // reset pointer
             char fn_buffer[3];  // buffer for filenames
             // write into buffer a filename for the found jpeg
             sprintf(fn_buffer,"%003d.jpg", file_count);
-            fprintf(stderr, "File: %s, Position: %ld\n", fn_buffer, ftell(inptr));
+            fprintf(stderr, "%s | bytes: %ld - ", fn_buffer, ftell(inptr));
 
             // open output file
             // FILE *outptr = fopen("/dev/null", "w");
             FILE *outptr = fopen(fn_buffer, "w");
 
-            // write output file while
+            // write output file while its not empty.
             while (fgetc(inptr) != 0xffffffff)
             {
-                fseek(inptr, byte, SEEK_SET); // reset to start of block
+                byte += block_size;
+                fseek(inptr, byte, SEEK_SET); // reset pointer
 
                 fwrite(&inptr, block_size, 1, outptr); // write one block to outfile
-
-                byte += block_size;
 
                 // prophylacticly test against signature of next file
                 if (fgetc(inptr) == 0xff) if (fgetc(inptr) == 0xd8) if (fgetc(inptr) == 0xff)
@@ -73,7 +73,8 @@ int main(int argc, char *argv[])
                     int fourth = fgetc(inptr);
                     if (fourth >= 0xe0 && fourth <= 0xef)
                     {
-                        fprintf(stderr, "New Signature Break Position: %ld\n", ftell(inptr));
+                        fprintf(stderr, "%ld\n", ftell(inptr) - 4);
+                        byte -= block_size; // counteracting for loop incrementation.
                         break; // end upon encounter of magic numbers
                     }
                 }
