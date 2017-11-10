@@ -152,22 +152,22 @@ int main(int argc, char *argv[])
     if (resize < 1) // shrinking image
     {
         skip_over_pixels = (1 / resize) * sizeof(RGBTRIPLE);
-        skip_over_scanlines = skip_over_pixels * (bi.biWidth + padding);
+        skip_over_scanlines = (skip_over_pixels * (bi.biWidth + padding)) / (resize * 4);
 
         /**
-         *   123456789abc
-         * 1 XXXXXXXXXXXX XXX
-         * 2 XXXXXXXXXXXX X X
-         * 3 XXXXXXXXXXXX XXX
-         * 4 XXXXXXXXXXXX
-         * 5 XXXX    XXXX
-         * 6 XXXX    XXXX
-         * 7 XXXX    XXXX
-         * 8 XXXX    XXXX
-         * 9 XXXXXXXXXXXX
-         * a XXXXXXXXXXXX
-         * b XXXXXXXXXXXX
-         * c XXXXXXXXXXXX
+         *   123456789abc 123456 123
+         * 1 ############ ###### ###
+         * 2 ############ ###### # #
+         * 3 ############ ##  ## ###
+         * 4 ############ ##  ##
+         * 5 ####    #### ######
+         * 6 ####    #### ######
+         * 7 ####    ####
+         * 8 ####    ####
+         * 9 ############
+         * a ############
+         * b ############
+         * c ############
          */
 
         // iterate vertically over 3 scanlines (or however many lines the shrunk image will have)
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
             // horizontally iterating, build the 3 pixel wide scanline for the outfile
             for (int segment = newbi.biWidth; segment > 0; segment--)
             {
-                int r=0,g=0,b=0;
+                int tR = 0, tG = 0, tB = 0;
                 // each of the 3 pixels in the outfile scanline is derived after
                 // iterating over a 4 pixel segment of the present infile scanline
                 for (int pixel = 1 / resize; pixel > 0; pixel--)
@@ -187,19 +187,18 @@ int main(int argc, char *argv[])
                     // read RGB triple from infile
                     fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
                     // sum pixels up
-                    r += triple.rgbtRed     * triple.rgbtRed;
-                    g += triple.rgbtGreen   * triple.rgbtGreen;
-                    b += triple.rgbtBlue    * triple.rgbtBlue;
+                    tR += triple.rgbtRed     * triple.rgbtRed;
+                    tG += triple.rgbtGreen   * triple.rgbtGreen;
+                    tB += triple.rgbtBlue    * triple.rgbtBlue;
                 }
-                // average 4 verticle pixels
-                triple.rgbtRed   = sqrt(r / (1 / resize));
-                triple.rgbtGreen = sqrt(g / (1 / resize));
-                triple.rgbtBlue  = sqrt(b / (1 / resize));
+                // average 4 infile pixels to make 1 outfile pixel
+                triple.rgbtRed   = sqrt(tR / (1 / resize));
+                triple.rgbtGreen = sqrt(tG / (1 / resize));
+                triple.rgbtBlue  = sqrt(tB / (1 / resize));
 
                 // write RGB triple to outfile
                 fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
             }
-
             // skip over input file padding, if any
             fseek(inptr, padding, SEEK_CUR);
 
@@ -208,7 +207,7 @@ int main(int argc, char *argv[])
                 fputc(0x00, outptr);
 
             // skip over scanlines in the input file according to skip_over_scanlines
-            // or possibly don't do that, and instead try to find a way to average it in the verticle dimension
+            // or possibly don't do that, and instead try to find a way to average it in the vertical dimension
             fseek(inptr, skip_over_scanlines, SEEK_CUR);
         }
     }
