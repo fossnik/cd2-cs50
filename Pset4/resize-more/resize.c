@@ -178,32 +178,22 @@ int main(int argc, char *argv[])
             // horizontally iterating, build the 3 pixel wide scanline for the outfile
             for (int segment = newbi.biWidth; segment > 0; segment--)
             {
-                int index = 0;
-                int *red = malloc(bi.biWidth + 1), *green = malloc(bi.biWidth), *blue = malloc(bi.biWidth);
+                int r=0,g=0,b=0;
                 // each of the 3 pixels in the outfile scanline is derived after
                 // iterating over a 4 pixel segment of the present infile scanline
                 for (int pixel = newbi.biWidth + 1; pixel > 0; pixel--)
                 {
                     // read RGB triple from infile
                     fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
-
-                    red   [index] = triple.rgbtRed;
-                    green [index] = triple.rgbtGreen;
-                    blue  [index] = triple.rgbtBlue;
-                    index++;
+                    // sum pixels up
+                    r += triple.rgbtRed;
+                    g += triple.rgbtGreen;
+                    b += triple.rgbtBlue;
                 }
-
-                // how do i average these ??
-
-
-                free(red);
-                free(green);
-                free(blue);
-
                 // average 4 verticle pixels
-                // triple.rgbtRed   = red / newbi.biWidth;
-                // triple.rgbtGreen = green / newbi.biWidth;
-                // triple.rgbtBlue  = blue / newbi.biWidth;
+                triple.rgbtRed   = r / newbi.biWidth;
+                triple.rgbtGreen = g / newbi.biWidth;
+                triple.rgbtBlue  = b / newbi.biWidth;
 
                 // write RGB triple to outfile
                 fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
