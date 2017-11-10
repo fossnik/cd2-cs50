@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "bmp.h"
 
@@ -181,19 +182,19 @@ int main(int argc, char *argv[])
                 int r=0,g=0,b=0;
                 // each of the 3 pixels in the outfile scanline is derived after
                 // iterating over a 4 pixel segment of the present infile scanline
-                for (int pixel = newbi.biWidth + 1; pixel > 0; pixel--)
+                for (int pixel = 1 / resize; pixel > 0; pixel--)
                 {
                     // read RGB triple from infile
                     fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
                     // sum pixels up
-                    r += triple.rgbtRed;
-                    g += triple.rgbtGreen;
-                    b += triple.rgbtBlue;
+                    r += triple.rgbtRed     * triple.rgbtRed;
+                    g += triple.rgbtGreen   * triple.rgbtGreen;
+                    b += triple.rgbtBlue    * triple.rgbtBlue;
                 }
                 // average 4 verticle pixels
-                triple.rgbtRed   = r / newbi.biWidth;
-                triple.rgbtGreen = g / newbi.biWidth;
-                triple.rgbtBlue  = b / newbi.biWidth;
+                triple.rgbtRed   = sqrt(r / (1 / resize));
+                triple.rgbtGreen = sqrt(g / (1 / resize));
+                triple.rgbtBlue  = sqrt(b / (1 / resize));
 
                 // write RGB triple to outfile
                 fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
