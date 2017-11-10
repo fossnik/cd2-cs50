@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
         // set pointer location by distance from file start
         fseek(inptr, byte, SEEK_SET);
 
-        // test magic number for jpeg (ff d8 ff & e0-ef)
+        // filesignature detection (magic numbers ff d8 ff & e0-ef)
         if (fgetc(inptr) == 0xff & fgetc(inptr) == 0xd8 & fgetc(inptr) == 0xff)
         {
             fourth = fgetc(inptr);
