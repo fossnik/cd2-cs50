@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
         skip_over_scanlines = (skip_over_pixels * (bi.biWidth + padding)) / (resize * 4);
 
         /**
-         *   123456789abc 123456 123
+         *   123456789ABC 123456 123
          * 1 ############ ###### ###
          * 2 ############ ###### # #
          * 3 ############ ##  ## ###
@@ -165,9 +165,9 @@ int main(int argc, char *argv[])
          * 7 ####    ####
          * 8 ####    ####
          * 9 ############
-         * a ############
-         * b ############
-         * c ############
+         * A ############
+         * B ############
+         * C ############
          */
 
         // iterate vertically over 3 scanlines (or however many lines the shrunk image will have)
