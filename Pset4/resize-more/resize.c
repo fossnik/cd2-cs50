@@ -151,8 +151,8 @@ int main(int argc, char *argv[])
 
     if (resize < 1) // shrinking image
     {
-        skip_over_pixels = (1 / resize) * sizeof(RGBTRIPLE);
-        skip_over_scanlines = (skip_over_pixels * (bi.biWidth + padding)) / (resize * 4);
+        skip_over_pixels = sizeof(RGBTRIPLE) * (1 / resize);
+        skip_over_scanlines = ((sizeof(RGBTRIPLE) * bi.biWidth) + padding) * (1 / resize);
 
         /**
          *   123456789ABC 123456 123
