@@ -86,9 +86,9 @@ int main(int argc, char *argv[])
 
             // &triple - 'RGBTRIPLE' struct encapsulating one pixel at a time.
             // .rgbtRed struct value is effectively the communication channel -
+            //  To tease out the enshrouded message which is therein secreted -
             //   -  Make white those pixels less than 255 in rgbtRed value
             //   -  Make black the rest of the pixels to filter out the noise
-            // thusly tease out the enshrouded message secreted therein.
             if (triple.rgbtRed < 255)
             { // make pixel white
                 triple.rgbtBlue = 255;
