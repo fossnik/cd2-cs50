@@ -26,8 +26,7 @@ int main(int argc, char *argv[])
     }
 
     // remember filenames
-    char *infile = argv[1];
-    char *outfile = argv[2];
+    char *infile = argv[1], *outfile = argv[2];
 
     // open input file
     FILE *inptr = fopen(infile, "r");
@@ -85,12 +84,17 @@ int main(int argc, char *argv[])
             // read RGB triple from infile
             fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
 
-            // processing one pixel at a time - encapsulated in the "triple" variable - an RGBTRIPLE struct
-            // pixels with low red are the message - brighten them, and darken others
-            if (triple.rgbtRed < 255) {
+            // &triple - 'RGBTRIPLE' struct encapsulating one pixel at a time.
+            // .rgbtRed struct value is effectively the communication channel -
+            //   -  Make white those pixels less than 255 in rgbtRed value
+            //   -  Make black the rest of the pixels to filter out the noise
+            // thusly tease out the enshrouded message secreted therein.
+            if (triple.rgbtRed < 255)
+            { // make pixel white
                 triple.rgbtBlue = 255;
                 triple.rgbtGreen = 255;
-            } else {
+            } else
+            { // make pixel black
                 triple.rgbtBlue = 0;
                 triple.rgbtGreen = 0;
                 triple.rgbtRed = 0;
@@ -105,15 +109,11 @@ int main(int argc, char *argv[])
 
         // then add it back (to demonstrate how)
         for (int k = 0; k < padding; k++)
-        {
             fputc(0x00, outptr);
-        }
     }
 
-    // close infile
+    // close infile and outfile
     fclose(inptr);
-
-    // close outfile
     fclose(outptr);
 
     // success
