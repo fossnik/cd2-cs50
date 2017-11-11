@@ -85,15 +85,16 @@ int main(int argc, char *argv[])
     }
 
     // read infile's BITMAPFILEHEADER
-    BITMAPFILEHEADER bf, newbf;
+    BITMAPFILEHEADER bf;
     fread(&bf, sizeof(BITMAPFILEHEADER), 1, inptr);
 
     // read infile's BITMAPINFOHEADER
-    BITMAPINFOHEADER bi, newbi;
+    BITMAPINFOHEADER bi;
     fread(&bi, sizeof(BITMAPINFOHEADER), 1, inptr);
 
     // make a copies of the File and Info headers
-    newbf = bf, newbi = bi;
+    BITMAPFILEHEADER newbf = bf;
+    BITMAPINFOHEADER newbi = bi;
 
     // ensure infile is (likely) a 24-bit uncompressed BMP 4.0
     if (bf.bfType != 0x4d42 || bf.bfOffBits != 54 || bi.biSize != 40 ||
@@ -108,7 +109,7 @@ int main(int argc, char *argv[])
     // modify metadata for the new image size - cast to int
     newbi.biWidth = (int)(bi.biWidth * resize);
 
-    // determine padding for resized image outfile
+    // determine padding for outfile (our resized image)
     int outfilepad      = (4 - (newbi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     newbi.biHeight      = bi.biHeight * resize;
@@ -137,10 +138,10 @@ int main(int argc, char *argv[])
         bf.bfSize, newbf.bfSize
     );
 
-    // write outfile's BITMAPFILEHEADER
+    // write outfile's edited copy of the original BITMAPFILEHEADER
     fwrite(&newbf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
-    // write outfile's BITMAPINFOHEADER
+    // write outfile's edited copy of the original BITMAPINFOHEADER
     fwrite(&newbi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // determine padding for scanlines (of infile)
@@ -149,8 +150,8 @@ int main(int argc, char *argv[])
     // establish how many bytes to fseek over during image shrinking.
     int skip_over_pixels, skip_over_scanlines;
 
-    if (resize < 1) // shrinking image
-    {
+    if (resize < 1)
+    { // shrinking image
         skip_over_pixels = sizeof(RGBTRIPLE) * (1 / resize);
         skip_over_scanlines = ((sizeof(RGBTRIPLE) * bi.biWidth) + padding) * (1 / resize - 1);
 
@@ -210,14 +211,14 @@ int main(int argc, char *argv[])
             // or possibly don't do that, and instead try to find a way to average it in the vertical dimension
             fseek(inptr, skip_over_scanlines, SEEK_CUR);
         }
-    }
-    else // enlarging image
+    } else // enlarging image
     {
         // iterate over infile's scanlines
         for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
         {
-            // reiterate scanlines for vertical resize
-            for (int q = 0; q < resize; q++) {
+            // copy scanlines for vertical resize
+            for (int q = 0; q < resize; q++)
+            {
                 // iterate over pixels in scanline (must use original bi.biWidth)
                 for (int j = 0; j < bi.biWidth; j++)
                 {
