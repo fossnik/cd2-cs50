@@ -1,20 +1,45 @@
 0.
 *Q - What is pneumonoultramicroscopicsilicovolcanoconiosis?
 
+*A - Pneumonoultramicroscopicsilicovolcanoconiosis is a 45 letter word reputed
+     to be the longest in the English language. Relevantly, a TRIE -tree array-
+     is a data structure that facilitates the traversal of vast indexes of data
+     in constant time. In an implementation of this data structure, a search
+     operation will never require more than a certain maximum number of steps -
+     a number derived from the length of the data being queried. In the case of
+     a dictionary, the maximum possible number of operations required to
+     execute a word search might ostensibly be 45, because that is the length
+     of the longest English word.
+
 1.
 *Q - According to its man page, what does getrusage do?
 
+*A - getrusage() appears to be a resource utilization monitor capable of
+     reporting various measures of the computational time and memory usage of
+     processes and threads.
+
 2.
-*Q - Per that same man page, how many members are in a variable of type struct rusage?
+*Q - Per that same man page, how many members are in a variable of type struct
+     rusage?
+
+*A - The variable rusage points to struct which contains the resource usage
+     data - A struct comprised of 16 members - 2 STRUCTs, and 14 LONGs.
 
 3.
-*Q - Why do you think we pass before and after by reference (instead of by value) to calculate, even though we’re not changing their contents?
+*Q - Why do you think we pass before and after by reference (instead of by
+     value) to calculate, even though we’re not changing their contents?
 
 4.
-*Q - Explain as precisely as possible, in a paragraph or more, how main goes about reading words from a file. In other words, convince us that you indeed understand how that function’s for loop works.
+*Q - Explain as precisely as possible, in a paragraph or more, how main goes
+     about reading words from a file. In other words, convince us that you
+     indeed understand how that function’s for loop works.
 
 5.
-*Q - Why do you think we used fgetc to read each word’s characters one at a time rather than use fscanf with a format string like "%s" to read whole words at a time? Put another way, what problems might arise by relying on fscanf alone?
+*Q - Why do you think we used fgetc to read each word’s characters one at a
+     time rather than use fscanf with a format string like "%s" to read whole
+     words at a time? Put another way, what problems might arise by relying on
+     fscanf alone?
 
 6.
-*Q - Why do you think we declared the parameters for check and load as const (which means "constant")?
+*Q - Why do you think we declared the parameters for check and load as const
+     (which means "constant")?
