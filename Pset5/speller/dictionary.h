@@ -41,4 +41,19 @@ typedef struct node
 }
 node;
 
+/**
+ * Hash Function - XOR hash. Returns a hash as an int.
+ */
+unsigned int hash(char *word, array_length)
+{
+    unsigned int hash;
+
+    for (int i = 0; word[i] != NULL; i++)
+        hash ^= word[i];
+
+    hash = hash % 50;
+
+    return hash;
+}
+
 #endif // DICTIONARY_H
