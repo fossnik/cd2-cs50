@@ -72,15 +72,7 @@ bool load(const char *dictionary)
  */
 unsigned int size(void)
 {
-    if (loaded)
-    {
-        // wc is a lovely GNU utility
-        unsigned int wc = 0;
-        // word count
-        while( fscanf(inptr, "%s", word) != EOF )
-            wc++;
-        return wc;
-    }
+    // TODO
     return 0;
 }
 
