@@ -219,6 +219,7 @@ bool move(int tile)
 
     // set the chosen tile to zero to complete swap
     board[old_r][old_c] = 0;
+
     return true;
 }
 
@@ -233,7 +234,8 @@ bool won(void)
 
     for(int row = 0; row < d; row++)
         for(int col = 0; col < d; col++)
-            if (board[row][col] < last++ && !(row == d - 1 && col == d - 1))
+            if (board[row][col] < last++ && !(row == d-1 && col == d-1))
                 return false;
+
     return true;
 }
