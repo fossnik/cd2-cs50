@@ -33,11 +33,12 @@ bool unload(void);
 
 /**
  * NODE TYPEDEF
+ * sll_word to indicate that the struct is self-referential.
  */
-typedef struct node
+typedef struct sll_word
 {
     char word[LENGTH + 1];
-    struct node *next;
+    struct sll_word* next;
 }
 node;
 
