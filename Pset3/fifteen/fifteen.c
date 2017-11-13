@@ -228,7 +228,7 @@ bool move(int tile)
  */
 bool won(void)
 {
-    // see if numbers are in ascending order for win
+    // see if numbers are in ascending order for win (excepting last)
     int last = 0;
 
     for(int row = 0; row < d; row++)
