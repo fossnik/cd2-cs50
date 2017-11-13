@@ -162,7 +162,8 @@ void init()
             board[row][col] = cell_num;
 
     // strange caveat for boards with odd number of tiles - swap 1 with 2
-    if ( d % 2 == 0 ) {
+    if ( d % 2 == 0 )
+    {
         board[d-1][d-3] = 1;
         board[d-1][d-2] = 2;
     }
@@ -173,7 +174,8 @@ void init()
  */
 void draw(void)
 {
-    for(int row = 0; row < d; row++) {
+    for(int row = 0; row < d; row++)
+    {
         for(int col = 0; col < d; col++)
             if (board[row][col] == 0) printf(".\t"); // 0 represents empty
             else printf("%d\t", board[row][col]); // print digit and tab
@@ -189,26 +191,31 @@ bool move(int tile)
 {
     int old_r, old_c, new_r, new_c;
 
-    // locate user specified tile
+    // locate tiles
     for(int row = 0; row < d; row++)
+    {
         for(int col = 0; col < d; col++)
-            if (board[row][col] == tile) {
+        {
+            if (board[row][col] == tile)
+            {
+                // user specified tile
                 old_r=row;
                 old_c=col;
             }
-
-    // locate hole (locate the zero)
-    for(int row = 0; row < d; row++)
-        for(int col = 0; col < d; col++)
-            if (board[row][col] == 0) {
+            if (board[row][col] == 0)
+            {
+                // zero tile
                 new_r=row;
                 new_c=col;
             }
+        }
+    }
 
     // column XOR row are delta by exactly 1 unit: swap the orthagonal tiles
     if (abs(new_r-old_r) + abs(new_c-old_c) == 1)
         board[new_r][new_c] = tile;
-    else return false;
+    else
+        return false;
 
     // set the chosen tile to zero to complete swap
     board[old_r][old_c] = 0;
@@ -222,8 +229,11 @@ bool move(int tile)
 bool won(void)
 {
     // see if numbers are in ascending order for win
-    for(int last = 0, row = 0; row < d; row++)
+    int last = 0;
+
+    for(int row = 0; row < d; row++)
         for(int col = 0; col < d; col++)
-            if (board[row][col] < last++ && !(row==d-1&&col==d-1)) return false;
+            if (board[row][col] < last++ && !(row == d - 1 && col == d - 1))
+                return false;
     return true;
 }
