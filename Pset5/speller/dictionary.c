@@ -38,7 +38,11 @@ bool load(const char *dictionary)
     char *word = malloc(LENGTH);
 
     // create an array of nodes (by the node struct defined in dictionary.h)
-    node *hashtable[array_size] = NULL;
+    node *hashtable[array_size];
+
+    // set the heads of each to null.
+    for (int i = 0; i < array_size; i++)
+        hashtable[i] = NULL;
 
     // scan dictionary file line by line (ie. word by word)
     while( fscanf(inptr, "%s", word) != EOF )
@@ -89,7 +93,7 @@ bool unload(void)
 /**
  * Hash Function - XOR hash. Returns a hash as an int.
  */
-unsigned int hasher(char *word, unsigned int array_length)
+unsigned int hasher(char *word, unsigned int buckets)
 {
     unsigned int hash_val = 1;
 
@@ -97,7 +101,7 @@ unsigned int hasher(char *word, unsigned int array_length)
     for (int i = 0; word[i] != '\0'; i++)
         hash_val ^= word[i];
 
-    hash_val = hash_val % 50;
+    hash_val = hash_val % (buckets - 1);
 
     return hash_val;
 }
