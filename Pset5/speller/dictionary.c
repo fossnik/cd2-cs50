@@ -38,7 +38,7 @@ bool load(const char *dictionary)
     char *word = malloc(LENGTH);
 
     // create an array of nodes (by the node struct defined in dictionary.h)
-    node *hashtable[array_size];
+    node *hashtable[array_size] = NULL;
 
     // scan dictionary file line by line (ie. word by word)
     while( fscanf(inptr, "%s", word) != EOF )
@@ -47,7 +47,8 @@ bool load(const char *dictionary)
         node *new_node = malloc(sizeof(node));
 
         // test that the new node is not null
-        if (new_node == NULL) {
+        if (new_node == NULL)
+        {
             unload();
             return false;
         }
