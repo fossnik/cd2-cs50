@@ -29,9 +29,9 @@ bool check(const char *word)
  */
 bool load(const char *dictionary)
 {
-    // open input file
-    FILE *inptr = fopen(dictionary, "r");
-    if (inptr == NULL)
+    // open input file (the dictionary)
+    FILE *dict_p = fopen(dictionary, "r");
+    if (dict_p == NULL)
     {
         fprintf(stderr, "Could not open %s.\n", dictionary);
         return false;
@@ -40,7 +40,7 @@ bool load(const char *dictionary)
     // create a buffer for storing individual words
     char *word = malloc(LENGTH);
 
-    // create an array of nodes (by the node struct defined in dictionary.h)
+    // create an array of nodes (node struct is defined in dictionary.h)
     node *hashtable[array_size];
 
     // set the heads of each to null.
@@ -48,10 +48,9 @@ bool load(const char *dictionary)
         hashtable[i] = NULL;
 
     // scan dictionary file line by line (ie. word by word)
-    while( fscanf(inptr, "%s", word) != EOF )
+    while( fscanf(dict_p, "%s", word) != EOF )
     {
         // malloc a node pointer for each new word
-        // this node pointer is the HEAD
         node *new_node = malloc(sizeof(node));
 
         // test that the new node is not null
@@ -65,13 +64,8 @@ bool load(const char *dictionary)
         strcpy(new_node->word, word);
 
         // hash the key (the word) to determine where to place the new node.
-        unsigned int bucket = hasher(word, array_size);
+        unsigned int bucket = hasher(word);
 
-        // point node to the current HEAD of the array
-        new_node->next = hashtable[bucket];
-
-        // store node as the new head of the array
-        hashtable[bucket] = new_node;
 
         // increment word count
         wc++;
@@ -100,7 +94,7 @@ bool unload(void)
 /**
  * Hash Function - XOR hash. Returns a hash as an int.
  */
-unsigned int hasher(char *word, unsigned int buckets)
+unsigned int hasher(char *word)
 {
     unsigned int hash_val = 1;
 
