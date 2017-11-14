@@ -9,8 +9,11 @@
 
 #include "dictionary.h"
 
-// define the size of the hash table array
+// define the number of "buckets" (Singly Linked Lists)
 static const unsigned int array_size = 50;
+
+// wordcount counter variable
+unsigned int wc = 0;
 
 /**
  * Returns true if word is in dictionary else false.
@@ -48,6 +51,7 @@ bool load(const char *dictionary)
     while( fscanf(inptr, "%s", word) != EOF )
     {
         // malloc a node pointer for each new word
+        // this node pointer is the HEAD
         node *new_node = malloc(sizeof(node));
 
         // test that the new node is not null
@@ -68,6 +72,9 @@ bool load(const char *dictionary)
 
         // store node as the new head of the array
         hashtable[bucket] = new_node;
+
+        // increment word count
+        wc++;
     }
     return true;
 }
@@ -98,6 +105,9 @@ unsigned int hasher(char *word, unsigned int buckets)
     unsigned int hash_val = 1;
 
     // loop through each letter and perturb.
+    // it's pretty random, but probably not random enough for certain uses.
+    // most significantly, the correlation between function input and output
+    // is fixed (returns the same result every time)
     for (int i = 0; word[i] != '\0'; i++)
         hash_val ^= word[i];
 
