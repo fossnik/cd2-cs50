@@ -89,8 +89,8 @@ bool load(const char *dictionary)
  */
 unsigned int size(void)
 {
-    // TODO
-    return 0;
+    // wc is 0 unless words are added to the dictionary.
+    return wc;
 }
 
 /**
