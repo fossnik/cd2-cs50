@@ -157,9 +157,10 @@ void greet(void)
 void init()
 {
     // numerate int matrix. decrement from square the board dimension less one.
-    for(int row = 0, cell_num = d*d-1; row < d; row++)
-        for(int col = 0; col < d; col++, cell_num--)
-            board[row][col] = cell_num;
+    int cell_num = d * d - 1;
+    for(int row = 0; row < d; row++)
+        for(int col = 0; col < d; col++)
+            board[row][col] = cell_num--;
 
     // strange caveat for boards with odd number of tiles - swap 1 with 2
     if ( d % 2 == 0 )
