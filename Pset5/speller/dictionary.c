@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #include "dictionary.h"
 
@@ -23,6 +24,14 @@ node *hashtable[hash_buckets];
  */
 bool check(const char *word)
 {
+    // create a lowercase version of the test word using node struct
+    // while const char *word is read only, a node is mutable
+    node *temp_node = malloc(sizeof(node));
+
+    // convert test word to small case
+    for (int i = 0; word[i] != '\0'; i++)
+        temp_node->word[i] = tolower(word[i]);
+
     // hash input to determine which bucket to search through
     unsigned int bucket = hasher(word);
 
@@ -30,9 +39,13 @@ bool check(const char *word)
     // "node" is a struct defined in a dictionary.h typedef
     // iterate through all the words in the bucket, comparing strings
     for (node* ptr = hashtable[bucket]; ptr != NULL; ptr = ptr->next)
-        if (strcmp(ptr->word, word) == 0)
+        if (strcmp(ptr->word, temp_node->word) == 0)
+        {
+            free(temp_node);
             return true;
+        }
 
+    free(temp_node);
     return false;
 }
 
@@ -69,6 +82,10 @@ bool load(const char *dictionary)
             return false;
         }
 
+        // convert to lower case for storage
+        for (int i = 0; word[i] != '\0'; i++)
+            word[i] = tolower(word[i]);
+
         // associate this word with the new node's word element
         strcpy(new_node->word, word);
 
@@ -81,7 +98,8 @@ bool load(const char *dictionary)
             new_node->next = NULL;
             hashtable[bucket] = new_node;
         }
-        else // whole chain gets tethered to new_node's next property.
+        // otherwise, the whole chain gets tethered to new_node's next property.
+        else
         {
             new_node->next = hashtable[bucket];
             hashtable[bucket] = new_node;
