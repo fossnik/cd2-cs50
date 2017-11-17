@@ -106,4 +106,7 @@
      (which means "constant")?
 
 *A - Parameters of check and load are declared constant because these are not
-     intended to contain mutable data.
+     intended to contain mutable data. This forced me to use a node struct in
+     check(), since there didn't seem to be another way to alter the read-only
+     'word.' Word needed to be compared in lowercase, but as it was passed in
+     as a const char*, the array was immutable and fixed.
