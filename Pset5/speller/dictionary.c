@@ -11,13 +11,14 @@
 #include "dictionary.h"
 
 // define the number of hashtable "buckets" (Singly Linked Lists)
-static const unsigned int hash_buckets = 50;
+static const unsigned int hash_buckets = 5;
 
 // wordcount counter variable
 unsigned int wc = 0;
 
-// create an array of nodes (node struct is defined in dictionary.h)
-node *hashtable[hash_buckets];
+// create an array to store locations of HEAD node of each singly linked list
+// (node struct is defined in dictionary.h)
+node *sll_head_table[hash_buckets];
 
 /**
  * Returns true if word is in dictionary else false.
@@ -38,9 +39,10 @@ bool check(const char *word)
     // "traversing linked lists" - seeking word
     // "node" is a struct defined in a dictionary.h typedef
     // iterate through all the words in the bucket, comparing strings
-    for (node* ptr = hashtable[bucket]; ptr != NULL; ptr = ptr->next)
+    for (node* dict_node = sll_head_table[bucket]; dict_node != NULL; dict_node = dict_node->next)
     {
-        if (strcmp(ptr->word, temp_node->word) == 0)
+        printf("WORD: %s    \ttemp->WORD: %s    \tdict->WORD: %s    \t(buckets: %d %d %d)\n", word, temp_node->word, dict_node->word, hasher(word), hasher(dict_node->word), hasher(temp_node->word));
+        if (strcmp(dict_node->word, temp_node->word) == 0)
         {
             free(temp_node);
             return true;
@@ -65,11 +67,11 @@ bool load(const char *dictionary)
     }
 
     // create a buffer for storing individual words
-    char *word = malloc(LENGTH);
+    char word[LENGTH];
 
     // set the heads of each to null.
     for (int i = 0; i < hash_buckets; i++)
-        hashtable[i] = NULL;
+        sll_head_table[i] = NULL;
 
     // scan dictionary file line by line (ie. word by word)
     while( fscanf(dict_p, "%s", word) != EOF )
@@ -84,34 +86,38 @@ bool load(const char *dictionary)
             return false;
         }
 
-        // convert to lower case for storage
+        // convert to lower case
         for (int i = 0; word[i] != '\0'; i++)
             word[i] = tolower(word[i]);
 
-        // associate this word with the new node's word element
+        // associate this word with the new node's word element (string copy)
         strcpy(new_node->word, word);
 
-        // hash the key (the word) to determine which bucket will keep the node
-        unsigned int bucket = hasher(word);
+        // hash the word (key) to determine which bucket ought keep the node
+        unsigned int bucket = hasher(new_node->word);
 
-        // avoid hash collisions - test that the bucket is empty
-        if (hashtable[bucket] == NULL)
+        // Mediation of Hash Collisions
+        // if empty - set the new node's NEXT element pointing to NULL, and
+        // register the new_node in our array of s-linked list HEAD nodes
+        if (sll_head_table[bucket] == NULL)
         {
             new_node->next = NULL;
-            hashtable[bucket] = new_node;
+            sll_head_table[bucket] = new_node;
         }
-        // otherwise, the whole chain gets tethered to new_node's next property.
+        // otherwise, the whole chain gets tethered to new_node's NEXT property.
+        // new_node is then registered as the new HEAD of the singly linked list
         else
         {
-            new_node->next = hashtable[bucket];
-            hashtable[bucket] = new_node;
+            new_node->next = sll_head_table[bucket];
+            sll_head_table[bucket] = new_node;
+            printf("PASS: %s\n", new_node->word);
+            return true;
         }
 
         // increment word count
         wc++;
     }
-    free(word);
-    return true;
+    return false;
 }
 
 /**
