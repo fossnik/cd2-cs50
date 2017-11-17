@@ -2,14 +2,24 @@
 *Q - What is pneumonoultramicroscopicsilicovolcanoconiosis?
 
 *A - Pneumonoultramicroscopicsilicovolcanoconiosis is a 45 letter word reputed
-     to be the longest in the English language. Relevantly, a TRIE -tree array-
-     is a data structure that facilitates the traversal of vast indexes of data
-     in constant time. In an implementation of this data structure, a search
-     operation will never require more than a certain maximum number of steps -
-     a number derived from the length of the data being queried. In the case of
-     a dictionary, the maximum possible number of operations required to
-     execute a word search might ostensibly be 45, because that is the length
-     of the longest English word.
+     to be longest in the English language. Significantly, there are certain
+     data structures, such as the TRIE -tree array- for which the size of the
+     largest data element in a search heap is a materially relevant factor.
+     Although this 45 letter word -terminology for a lung disease also known as
+     silicosis- may not be oft used in conversation, it is illustrative in as
+     much as that, as allegedly the longest English word, it would define a
+     order dimension of a TRIE or suchlike data structure in the hypothetical
+     example of a data set constituting all real English words (to wit - a
+     dictionary).
+     The design of the aforementioned TRIE structure, which is contingent on
+     the maximal width of data, facilitates the traversal of vast sets of
+     data in virtually constant time - to query data within a TRIE never
+     requires more than a certain maximum number of operations; a number which
+     is derived from the size of the most protracted data element in the heap.
+     In the case of a dictionary, the greatest possible number of operations
+     required to execute a word search might ostensibly be 45, owing to the
+     particular bredth of that most extensive word in the set which comprises
+     the English language.
 
 1.
 *Q - According to its man page, what does getrusage do?
@@ -23,16 +33,51 @@
      rusage?
 
 *A - The variable rusage points to struct which contains the resource usage
-     data - A struct comprised of 16 members - 2 STRUCTs, and 14 LONGs.
+     data - A struct composed of 16 members - 2 STRUCTs, and 14 LONGs.
 
 3.
 *Q - Why do you think we pass before and after by reference (instead of by
      value) to calculate, even though we’re not changing their contents?
 
+*A - The before and after structs already exist in the memory, due to the
+     fundamental way rusage represents information as structs, so it is most
+     efficient simply to refer to said structs via pointers.
+     Employing additional program logic would be misguided, unnecessary, and in
+     every sense counterproductive. That approach would require allocation of
+     further computational resources, and potentially open up new points of
+     vulnerability within the program, due to semantic or syntactic error.
+
 4.
 *Q - Explain as precisely as possible, in a paragraph or more, how main goes
      about reading words from a file. In other words, convince us that you
      indeed understand how that function’s for loop works.
+
+*A - The for loop implemented on line 71 in speller.c accounts for the program's
+     facility to parse the file containing words intended to be spell-checked.
+     Said for loop initializes an Int, and assigns it a value passed in from
+     fgetc (get character). An Int type can store a single character as
+     effectively as a Char, but may perhaps be of greater utility in particular
+     use cases.
+     Evaluation of lines 54 - 55 suggests that the file pointer, 'fp' is
+     derived from the command argument meant to establish the path of the text
+     file which is to be spellchecked. Each time fgetc(fp) is called, it
+     returns the subsequent character from the location of the file pointer.
+     The aforementioned for loop is configured such that it will iterate
+     through this file one character at a time, terminating only upon encounter
+     of the end of file (EOF) character.
+     Each iteration of the for loop passes in the next character from the input
+     file, and it is appended to an array called 'word', so long as it that
+     character is either an alphabet letter or an apostrophe. If 'c' does not
+     satisfy these conditions, command execution is passed to an else-if on
+     line 92,c which will detect if c is a digit. If the 'word' array becomes
+     longer than 45 characters, the putative word is rejected, and the index
+     reset to zero. The while statements on lines 84 and 95 are meant to
+     advance the file pointer to the next line by calling fgetc until a
+     non-alpha or non-alphanumberical character, such as a newline character,
+     is reached. At this point, index is reset.
+     As implemented on line 102, a reset index value -indicating a rejected
+     word- will cause control of execution to pass over the block of code
+     responsible for the spell checking and representation of misspelled words.
 
 5.
 *Q - Why do you think we used fgetc to read each word’s characters one at a
@@ -40,6 +85,22 @@
      words at a time? Put another way, what problems might arise by relying on
      fscanf alone?
 
+*A - This program could be designed to use fscan, although there are some
+     particular advantages to parsing a file character by character. fgetc()
+     is able to reject strings immediately when they are found to be longer
+     than 45 characters and therefore cannot be a dictionary word. Since fscanf
+     is dependant on newline characters to delimit data, it is not able to
+     easily disregard strings that may be too long to be any word. Lines with
+     irregular, non-alpha characters cannot be easily disregarded either, and
+     that will mean making a choice between coding additional logic to perform
+     input sanity checking, or else being relegated to passing in many more
+     garbage, obvious non-words to be tested against our dictionary, which is
+     already probably the single greatest computational bottleneck herein.
+     We certainly don't want to do that.
+
 6.
 *Q - Why do you think we declared the parameters for check and load as const
      (which means "constant")?
+
+*A - Parameters of check and load are declared constant because these are not
+     intended to contain mutable data.
