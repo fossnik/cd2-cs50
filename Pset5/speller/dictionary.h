@@ -33,12 +33,14 @@ bool unload(void);
 
 /**
  * NODE TYPEDEF
- * sll_word to indicate that the struct is self-referential.
+ *  the node struct is self-referential
+ *  's_linked_list' is an interim value that is relevant to
+ *  defining self-referential structs, such as linked lists
  */
-typedef struct sll_word
+typedef struct s_linked_list
 {
     char word[LENGTH + 1];
-    struct sll_word* next;
+    struct s_linked_list* next;
 }
 node;
 
