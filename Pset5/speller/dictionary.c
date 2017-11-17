@@ -113,7 +113,7 @@ bool unload(void)
 /**
  * Hash Function - XOR hash. Returns a hash as an int.
  */
-unsigned int hasher(char *word)
+unsigned int hasher(const char *word)
 {
     unsigned int hash_val = 1;
 
