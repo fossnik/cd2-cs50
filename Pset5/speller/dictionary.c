@@ -20,7 +20,15 @@ unsigned int wc = 0;
  */
 bool check(const char *word)
 {
-    // TODO
+    // hash input to determine which bucket to search through
+    unsigned int bucket = hasher(word);
+
+    // "traversing linked lists" - seeking word
+    // "node" is a struct defined in a dictionary.h typedef
+    // iterate through all the words in the bucket
+    for (node* ptr = hashtable[bucket]; ptr != NULL; ptr = ptr->next)
+        if (ptr->word == word) return true;
+
     return false;
 }
 
@@ -63,7 +71,7 @@ bool load(const char *dictionary)
         // associate this word with the new node's word element
         strcpy(new_node->word, word);
 
-        // hash the key (the word) to determine where to place the new node.
+        // hash the key (the word) to determine which bucket will keep the node
         unsigned int bucket = hasher(word);
 
         // avoid hash collisions - test that the bucket is empty
