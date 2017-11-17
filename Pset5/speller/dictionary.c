@@ -28,9 +28,10 @@ bool check(const char *word)
 
     // "traversing linked lists" - seeking word
     // "node" is a struct defined in a dictionary.h typedef
-    // iterate through all the words in the bucket
+    // iterate through all the words in the bucket, comparing strings
     for (node* ptr = hashtable[bucket]; ptr != NULL; ptr = ptr->next)
-        if (ptr->word == word) return true;
+        if (strcmp(ptr->word, word) == 0)
+            return true;
 
     return false;
 }
