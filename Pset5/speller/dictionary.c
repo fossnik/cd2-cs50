@@ -15,6 +15,9 @@ static const unsigned int hash_buckets = 50;
 // wordcount counter variable
 unsigned int wc = 0;
 
+// create an array of nodes (node struct is defined in dictionary.h)
+node *hashtable[hash_buckets];
+
 /**
  * Returns true if word is in dictionary else false.
  */
@@ -47,9 +50,6 @@ bool load(const char *dictionary)
 
     // create a buffer for storing individual words
     char *word = malloc(LENGTH);
-
-    // create an array of nodes (node struct is defined in dictionary.h)
-    node *hashtable[hash_buckets];
 
     // set the heads of each to null.
     for (int i = 0; i < hash_buckets; i++)
