@@ -9,8 +9,8 @@
 
 #include "dictionary.h"
 
-// define the number of "buckets" (Singly Linked Lists)
-static const unsigned int num_buckets = 50;
+// define the number of hashtable "buckets" (Singly Linked Lists)
+static const unsigned int hash_buckets = 50;
 
 // wordcount counter variable
 unsigned int wc = 0;
@@ -41,10 +41,10 @@ bool load(const char *dictionary)
     char *word = malloc(LENGTH);
 
     // create an array of nodes (node struct is defined in dictionary.h)
-    node *hashtable[num_buckets];
+    node *hashtable[hash_buckets];
 
     // set the heads of each to null.
-    for (int i = 0; i < num_buckets; i++)
+    for (int i = 0; i < hash_buckets; i++)
         hashtable[i] = NULL;
 
     // scan dictionary file line by line (ie. word by word)
@@ -116,7 +116,7 @@ unsigned int hasher(char *word)
     for (int i = 0; word[i] != '\0'; i++)
         hash_val ^= word[i];
 
-    hash_val = hash_val % (num_buckets - 1);
+    hash_val = hash_val % (hash_buckets - 1);
 
     return hash_val;
 }
