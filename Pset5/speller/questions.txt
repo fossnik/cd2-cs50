@@ -97,6 +97,9 @@
      garbage, obvious non-words to be tested against our dictionary, which is
      already probably the single greatest computational bottleneck herein.
      We certainly don't want to do that.
+     However, one might note that parsing information in such small chunks
+     leads to a lot of iteration, which may make the debugging process
+     more complex and/or tedious.
 
 6.
 *Q - Why do you think we declared the parameters for check and load as const
