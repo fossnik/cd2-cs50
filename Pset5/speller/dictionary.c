@@ -39,11 +39,13 @@ bool check(const char *word)
     // "node" is a struct defined in a dictionary.h typedef
     // iterate through all the words in the bucket, comparing strings
     for (node* ptr = hashtable[bucket]; ptr != NULL; ptr = ptr->next)
+    {
         if (strcmp(ptr->word, temp_node->word) == 0)
         {
             free(temp_node);
             return true;
         }
+    }
 
     free(temp_node);
     return false;
@@ -108,6 +110,7 @@ bool load(const char *dictionary)
         // increment word count
         wc++;
     }
+    free(word);
     return true;
 }
 
