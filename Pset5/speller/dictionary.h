@@ -45,6 +45,6 @@ node;
 /**
  * Hash Function - XOR hash. Returns a hash as an int.
  */
-unsigned int hasher(char *word);
+unsigned int hasher(const char *word);
 
 #endif // DICTIONARY_H
