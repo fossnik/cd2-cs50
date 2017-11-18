@@ -95,8 +95,9 @@ bool load(const char *dictionary)
         unsigned int bucket = hasher(new_node->word);
 
         // Mediation of Hash Collisions
-        // if HEAD empty, set the new node's NEXT element pointing to NULL, and
-        // register the new_node in the array of linked list HEADs
+        // if this index of our buckets array has not been furnished with a
+        // sll HEAD node, then let new_node's NEXT element indicate NULL, and
+        // register new_node's location in memory at this index of the array
         if (sll_head_table[bucket] == NULL)
         {
             new_node->next = NULL;
