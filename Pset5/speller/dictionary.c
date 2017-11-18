@@ -27,30 +27,30 @@ bool check(const char *word)
 {
     // while the given const char *word is read-only, a node struct is mutable
     // a temporary node shall store the small-case transmogrification of 'word'
-    node *temp_node = malloc(sizeof(node));
+    node *small_case = malloc(sizeof(node));
 
     // convert test word to small case
     int i;
     for (i = 0; word[i] != '\0'; i++)
-        temp_node->word[i] = tolower(word[i]);
+        small_case->word[i] = tolower(word[i]);
 
     // append terminator to word
-    temp_node->word[i + 1] = '\0';
+    small_case->word[i + 1] = '\0';
 
     // hash input to determine which bucket to search through
-    unsigned int bucket = hasher(temp_node->word);
+    unsigned int bucket = hasher(small_case->word);
 
     // seeking 'word' match, parse each word element in the selected node chain
     for (node* dict_node = sll_head_table[bucket]; dict_node != NULL; dict_node = dict_node->next)
     {
-        if (strcmp(dict_node->word, temp_node->word) == 0)
+        if (strcmp(dict_node->word, small_case->word) == 0)
         {
-            free(temp_node);
+            free(small_case);
             return true;
         }
     }
 
-    free(temp_node);
+    free(small_case);
     return false;
 }
 
@@ -117,6 +117,9 @@ bool load(const char *dictionary)
         // increment word count
         wc++;
     }
+    // close input file (the dictionary)
+    fclose(dict_p);
+
     return true;
 }
 
