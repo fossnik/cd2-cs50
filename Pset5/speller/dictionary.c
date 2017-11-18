@@ -16,7 +16,7 @@ static const unsigned int hash_buckets = 5;
 // wordcount tracker
 unsigned int wc = 0;
 
-// this node array stores the location of each node HEAD
+// this array of node pointers keeps track of each linked list's HEAD node
 // (node struct is type defined in dictionary.h)
 node *sll_head_table[hash_buckets];
 
