@@ -11,7 +11,7 @@
 #include "dictionary.h"
 
 // define the number of hashtable "buckets" (Singly Linked Lists)
-static const unsigned int hash_buckets = 5;
+static const unsigned int hash_buckets = 1000;
 
 // wordcount tracker
 unsigned int wc = 0;
@@ -30,16 +30,19 @@ bool check(const char *word)
     node *temp_node = malloc(sizeof(node));
 
     // convert test word to small case
-    for (int i = 0; word[i] != '\0'; i++)
+    int i;
+    for (i = 0; word[i] != '\0'; i++)
         temp_node->word[i] = tolower(word[i]);
 
+    // append terminator to word
+    temp_node->word[i + 1] = '\0';
+
     // hash input to determine which bucket to search through
-    unsigned int bucket = hasher(word);
+    unsigned int bucket = hasher(temp_node->word);
 
     // seeking 'word' match, parse each word element in the selected node chain
     for (node* dict_node = sll_head_table[bucket]; dict_node != NULL; dict_node = dict_node->next)
     {
-        printf("WORD: %s    \ttemp->WORD: %s    \tdict->WORD: %s    \t(buckets: %d %d %d)\n", word, temp_node->word, dict_node->word, hasher(word), hasher(dict_node->word), hasher(temp_node->word));
         if (strcmp(dict_node->word, temp_node->word) == 0)
         {
             free(temp_node);
@@ -64,7 +67,7 @@ bool load(const char *dictionary)
         return false;
     }
 
-    // create a buffer for storing individual words
+    // allocate a buffer for words being scanned in from the dictionary file
     char a_word[LENGTH];
 
     // set NULL each index in the hash table, signifying absence of list HEADs
@@ -122,7 +125,7 @@ bool load(const char *dictionary)
  */
 unsigned int size(void)
 {
-    // wc is 0 unless words are added to the dictionary.
+    // wc will remain 0 until some words are loaded from the dictionary file
     return wc;
 }
 
@@ -131,8 +134,26 @@ unsigned int size(void)
  */
 bool unload(void)
 {
-    // TODO
-    return false;
+    // recurse all linked lists in hash table
+    for (int i = 0; i < hash_buckets; i++)
+    {
+        // target HEAD node of bucket 'i'
+        node *cursor = sll_head_table[i];
+
+        // iterate through the linked list
+        while (cursor != NULL)
+        {
+            // remember current node's memory index
+            node *temp = cursor;
+
+            // advance to next node in the chain
+            cursor = cursor->next;
+
+            // unload and free node according to pointer reference
+            free(temp);
+        }
+    }
+    return true;
 }
 
 /**
