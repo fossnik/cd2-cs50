@@ -11,7 +11,7 @@
 #include "dictionary.h"
 
 // define the number of hashtable "buckets" (Singly Linked Lists)
-static const unsigned int hash_buckets = 1000;
+static const unsigned int hash_buckets = 1024;
 
 // wordcount tracker
 unsigned int wc = 0;
@@ -34,8 +34,8 @@ bool check(const char *word)
     for (i = 0; word[i] != '\0'; i++)
         small_case->word[i] = tolower(word[i]);
 
-    // append terminator to word
-    small_case->word[i + 1] = '\0';
+    // append a null terminator to the word
+    small_case->word[i] = '\0';
 
     // hash input to determine which bucket to search through
     unsigned int bucket = hasher(small_case->word);
@@ -173,6 +173,7 @@ unsigned int hasher(const char *word)
     for (int i = 0; word[i] != '\0'; i++)
         hash_val ^= word[i];
 
+    // range-limit function output according to the available # of hash indexes
     hash_val = hash_val % (hash_buckets - 1);
 
     return hash_val;
