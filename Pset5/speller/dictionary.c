@@ -109,16 +109,12 @@ bool load(const char *dictionary)
         {
             new_node->next = sll_head_table[bucket];
             sll_head_table[bucket] = new_node;
-
-            // DEBUG: Print words entered into dictionary
-            printf("PASS: %s\n", new_node->word);
-            return true;
         }
 
         // increment word count
         wc++;
     }
-    return false;
+    return true;
 }
 
 /**
