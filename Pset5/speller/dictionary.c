@@ -97,7 +97,7 @@ bool load(const char *dictionary)
         // Mediation of Hash Collisions
         // if this index of our buckets array has not been furnished with a
         // sll HEAD node, then let new_node's NEXT element indicate NULL, and
-        // register new_node's location in memory at this index of the array
+        // register new_node's location in memory at the said index.
         if (sll_head_table[bucket] == NULL)
         {
             new_node->next = NULL;
