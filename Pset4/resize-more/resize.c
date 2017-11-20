@@ -26,7 +26,8 @@ int main(int argc, char *argv[])
 
     /** Alternative Usage Regime for Testing
      */
-    if (!(argc < 5 && argc > 1)) {
+    if (!(argc < 5 && argc > 1))
+    {
         fprintf(stderr, "\n"
         "!!~ Alternative Usage Regime for Testing ~!!\n\n"
         "Usage: ./resize factor <infile> <outfile>\n\n"
@@ -44,7 +45,8 @@ int main(int argc, char *argv[])
     char *infile, *outfile;
     float resize = atof(argv[1]);
 
-    switch ( argc ) {
+    switch ( argc )
+    {
         case 4:
             infile = argv[2];
             outfile = argv[3];
@@ -71,14 +73,16 @@ int main(int argc, char *argv[])
 
     // open input file
     FILE *inptr = fopen(infile, "r");
-    if (inptr == NULL) {
+    if (inptr == NULL)
+    {
         fprintf(stderr, "Could not open %s.\n", infile);
         return 2;
     }
 
     // open output file
     FILE *outptr = fopen(outfile, "w");
-    if (outptr == NULL) {
+    if (outptr == NULL)
+    {
         fclose(inptr);
         fprintf(stderr, "Could not create %s.\n", outfile);
         return 3;
