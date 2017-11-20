@@ -185,6 +185,7 @@ int main(int argc, char *argv[])
             for (int segment = newbi.biWidth; segment > 0; segment--)
             {
                 int tR = 0, tG = 0, tB = 0;
+
                 // each of the 3 pixels in the outfile scanline is derived after
                 // iterating over a 4 pixel segment of the present infile scanline
                 for (int pixel = 1 / resize; pixel > 0; pixel--)
@@ -204,6 +205,7 @@ int main(int argc, char *argv[])
                 // write RGB triple to outfile
                 fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
             }
+
             // skip over input file padding, if any
             fseek(inptr, padding, SEEK_CUR);
 
@@ -215,7 +217,8 @@ int main(int argc, char *argv[])
             // or possibly don't do that, and instead try to find a way to average it in the vertical dimension
             fseek(inptr, skip_over_scanlines, SEEK_CUR);
         }
-    } else // enlarging image
+    }
+    else // enlarging image
     {
         // iterate over infile's scanlines
         for (int i = 0, biHeight = abs(bi.biHeight); i < biHeight; i++)
@@ -240,7 +243,7 @@ int main(int argc, char *argv[])
                 for (int k = 0; k < outfilepad; k++)
                     fputc(0x00, outptr);
 
-                // skip back to beginning of scanline for repeat
+                // reset cursor to start of scanline
                 if (q < resize - 1)
                     fseek(inptr, -((bi.biWidth) * sizeof(RGBTRIPLE)), SEEK_CUR);
             }
@@ -253,6 +256,5 @@ int main(int argc, char *argv[])
     fclose(inptr);
     fclose(outptr);
 
-    // success
     return 0;
 }
