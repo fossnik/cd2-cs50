@@ -24,14 +24,15 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    int fread_buffer[block_size];   // buffer for blocks IO
+    // buffer for input file reading
+    int fread_buffer[block_size];
 
-    int file_count = 0; // counter to keep track of filenames
+    int file_count = 0;
 
     // iterate through input file one block at a time
     for (long byte = 0; fgetc(inptr) != 0xffffffff; byte += block_size)
     {
-        _Bool signature_detected = 0; // (_Bool is a c99 keyword)
+        _Bool signature_detected = 0;
         int fourth;
 
         // set pointer location by distance from file start
@@ -42,18 +43,19 @@ int main(int argc, char *argv[])
         {
             fourth = fgetc(inptr);
             if (fourth >= 0xe0 && fourth <= 0xef)
-                signature_detected = 1; // "magic" numbers detected!
+                signature_detected = 1;
         }
 
         if (signature_detected)
         {
-            fseek(inptr, byte, SEEK_SET);   // reset pointer
-            char fn_buffer[8];              // buffer for filenames
-            // write into buffer a filename for the found jpeg
-            sprintf(fn_buffer,"%003d.jpg", file_count);
+            // reset pointer
+            fseek(inptr, byte, SEEK_SET);
+
+            char filename_buffer[8];
+            sprintf(filename_buffer,"%003d.jpg", file_count);
 
             // open output file
-            FILE *outptr = fopen(fn_buffer, "w");
+            FILE *outptr = fopen(filename_buffer, "w");
 
             // write output file while input not NULL.
             while (fread(fread_buffer, block_size, 1, inptr) != 0)
@@ -61,21 +63,24 @@ int main(int argc, char *argv[])
                 fwrite(fread_buffer, block_size, 1, outptr);
 
                 byte += block_size;
-                fseek(inptr, byte, SEEK_SET); // reset pointer.
+
+                fseek(inptr, byte, SEEK_SET);
+
                 // avoid running over the next file
                 if (fgetc(inptr) == 0xff) if (fgetc(inptr) == 0xd8) if (fgetc(inptr) == 0xff)
                 {
                     fourth = fgetc(inptr);
                     if (fourth >= 0xe0 && fourth <= 0xef)
                     {
-                        byte -= block_size; // counteract increment
-                        break; // end upon encounter of magic numbers
+                        // counteract incrementation of the for-loop
+                        byte -= block_size;
+                        break;
                     }
                 }
-                fseek(inptr, byte, SEEK_SET); // reset pointer.
+                fseek(inptr, byte, SEEK_SET);
             }
             file_count++;
-            fclose(outptr); // close outfile - end of jpeg
+            fclose(outptr);
         }
     }
 
